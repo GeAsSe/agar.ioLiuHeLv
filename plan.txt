@@ -4,4 +4,4 @@
 4. add feature: SPLIT. In 15 seconds balls can't merge together.
 5. add "spur", enten, ball automatically split into 16 pieces.
 6. add feature: BUD. shoot some of ball's size to one place.(spur can eat bud and split.)
-7. online design. 
+7. online design. £¨include chating system, death system, anti-cheat, some UI design£©
