@@ -218,11 +218,12 @@ bool Player::collideFood(Food * food)
 //v改变要改；
 void Player::updateDivision()
 {
+	/*
 	if (_state == State::CONCENTRATE)
 	{
 		this->concentrate();
 	}
-
+	*/
 
 	auto rect = this->getPlayerRect();
 
@@ -233,10 +234,12 @@ void Player::updateDivision()
 		if (division != NULL)
 		{
 			float speed = division->getSpeed();
+			/*
 			if (_state == State::CONCENTRATE)
 			{
 				speed = PLAYER_CONCENTRATE_SPEED;
 			}
+			*/
 			Vec2 velocity = division->getVelocity();
 			float dx = velocity.x*speed;
 			float dy = velocity.y*speed;
@@ -244,6 +247,7 @@ void Player::updateDivision()
 			Vec2 oldPosition = division->getPosition();
 			Vec2 newPosition = Vec2(oldPosition.x + divisionVec.x, oldPosition.y + divisionVec.y);
 			//不在主动合体状态，也不在分身状态，分身会往中心靠拢
+			/*
 			if (_state != State::CONCENTRATE && _state != State::DIVIDE) 
 			{
 				Vec2 centerVec = rect.origin - oldPosition; // 指向中心方向
@@ -257,7 +261,7 @@ void Player::updateDivision()
 				if (cosAngle > 0 && cosAngle < 1) //只处理夹角小于90度的情况
 					newPosition = Vec2(oldPosition.x + moveVec.x, oldPosition.y + moveVec.y);
 			}
-
+			*/
 			float radius1 = division->getRadius();
 			if (!_combineEnable)//不在合体、分身状态，分身会进行碰撞检测
 			{
@@ -453,6 +457,7 @@ void Player::divideFinish()
 	_state = State::NORMAL;
 }
 //可能要改；
+/*
 void Player::concentrate() //主动向中心靠拢
 {
 	auto rect = this->getPlayerRect();
@@ -467,7 +472,7 @@ void Player::concentrate() //主动向中心靠拢
 		}
 	}
 }
-
+*/
 bool Player::collidePrick(Prick *prick)
 {
 	bool collideFlag = false;
@@ -534,12 +539,12 @@ bool Player::collidePrick(Prick *prick)
 
 	return false;
 }
-
+/*
 void Player::setConcentrate()
 {
 	_state = State::CONCENTRATE;
 }
-
+*/
 bool Player::collideRival(Player * rival)
 {
 	bool bRet = false;
@@ -615,14 +620,12 @@ std::string  Player::getPlayerName()
 
 void Player::GameOver()
 {
-	int xPosition = rand() % MAP_WIDTH;
+	/*int xPosition = rand() % MAP_WIDTH;
 	int yPosition = rand() % MAP_HEIGHT;
 	Vec2 position = Vec2(xPosition, yPosition);
-
-	auto division = this->createDivision(position, /*Vec2::ZERO,*/ PLAYER_INITIAL_SCORE);
-	_map->addChild(division, PLAYER_INITIAL_SCORE);
+	auto division = this->createDivision(position, Vec2::ZERO, PLAYER_INITIAL_SCORE);
+	_map->addChild(division, PLAYER_INITIAL_SCORE);*/
 	/*Director::getInstance()->replaceScene(EndScene::createScene());*/
-	
 	/*_velocity = Vec2::ZERO;*/
 }
 
@@ -649,6 +652,8 @@ Vector<PlayerDivision *> & Player::getDivisionList()
 {
 	return _divisionList;
 }
+
+
 
 void Player::onExit()
 {
@@ -685,5 +690,5 @@ int Player::countSpitSporeNum()
 
 void Player::collidePrickFinish()
 {
-	_state = State::CONCENTRATE;
+	_state = State::NORMAL;
 }

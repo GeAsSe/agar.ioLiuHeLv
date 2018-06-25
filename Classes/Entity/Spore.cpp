@@ -39,11 +39,11 @@ bool Spore::init(const std::string& filename)
 
 	return true;
 }
-
-Spore * Spore::create(int id)
+/*
+Spore * Spore::create()
 {
 	Spore * spore = new Spore();
-	if (spore && spore->init(id))
+	if (spore && spore->init())
 	{
 		spore->autorelease();
 		return spore;
@@ -52,7 +52,7 @@ Spore * Spore::create(int id)
 	return nullptr;
 }
 
-bool Spore::init(int id)
+bool Spore::init()
 {
 	_skinID = id;
 	std::string filename = StringUtils::format("public/keyword_%d.png", id);
@@ -75,3 +75,4 @@ int Spore::getID()
 {
 	return _skinID;
 }
+*/

@@ -1,6 +1,34 @@
-#include "HelloWorldScene.h"
-#include "SimpleAudioEngine.h"
+/****************************************************************************
+ Copyright (c) 2017-2018 Xiamen Yaji Software Co., Ltd.
+ 
+ http://www.cocos2d-x.org
+ 
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in
+ all copies or substantial portions of the Software.
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ THE SOFTWARE.
+ ****************************************************************************/
 
+#include "HelloWorldScene.h"
+
+#include"EnterScene/StartScene.h"
+#include"EnterScene/HelpScene.h"
+#include "ui/CocosGUI.h"
+#include"Entity/Entity.h"
+#include"Header/AppMacros.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -25,89 +53,73 @@ bool HelloWorld::init()
         return false;
     }
 
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    
+	Size size = Director::getInstance()->getVisibleSize();
+	Vec2 orgin = Director::getInstance()->getVisibleOrigin();
+	auto*pBackgroud = Sprite::create("Backgroud.png");
+	pBackgroud->setPosition(size.width / 2, size.height / 2);
+	addChild(pBackgroud);
+	auto *chnStrings = Dictionary::createWithContentsOfFile("chinese/Enter_Strings.xml");
+	const char *str1 = ((String*)chnStrings->objectForKey("string1"))->getCString();
+	auto* labelBegin = Label::create(str1, "Arial", 18);
+	labelBegin->setTextColor(Color4B::GREEN);
+	auto pMenuBegin = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonBegin));
+	auto pLabelBegin = MenuItemLabel::create(labelBegin);
+	auto menuBegin = Menu::create(pMenuBegin, pLabelBegin, NULL);
+	menuBegin->setAnchorPoint(Vec2(0,0));
+	menuBegin->setScale(2.0);
+	menuBegin->setPosition(size.width / 2, size.height / 2 *1.3);
+	this->addChild(menuBegin);
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
+	const char *str2 = ((String*)chnStrings->objectForKey("string2"))->getCString();
+	auto* labelHelp = Label::create(str2, "Arial", 18);
+	labelHelp->setTextColor(Color4B::GREEN);
+	auto pMenuHelp = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonHelp));
+	auto pLabelHelp = MenuItemLabel::create(labelHelp);
+	auto menuHelp = Menu::create(pMenuHelp, pLabelHelp, NULL);
+	menuHelp->setAnchorPoint(Vec2(0, 0));
+	menuHelp->setScale(2.0);
+	menuHelp->setPosition(size.width / 2, size.height / 2 );
+	this->addChild(menuHelp);
 
-    // add a "close" icon to exit the progress. it's an autorelease object
-    auto closeItem = MenuItemImage::create(
-                                           "CloseNormal.png",
-                                           "CloseSelected.png",
-                                           CC_CALLBACK_1(HelloWorld::menuCloseCallback, this));
+	const char *str3 = ((String*)chnStrings->objectForKey("string3"))->getCString();
+	auto* labelOut = Label::create(str3, "Arial", 18);
+	labelOut->setTextColor(Color4B::GREEN);
+	auto pMenuOut = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonOut));
+	auto pLabelOut = MenuItemLabel::create(labelOut);
+	auto menuOut = Menu::create(pMenuOut, pLabelOut, NULL);
+	menuOut->setAnchorPoint(Vec2(0, 0));
+	menuOut->setScale(2.0);
+	menuOut->setPosition(size.width / 2, size.height / 2*0.7);
+	this->addChild(menuOut);
 
-    if (closeItem == nullptr ||
-        closeItem->getContentSize().width <= 0 ||
-        closeItem->getContentSize().height <= 0)
-    {
-        problemLoading("'CloseNormal.png' and 'CloseSelected.png'");
-    }
-    else
-    {
-        float x = origin.x + visibleSize.width - closeItem->getContentSize().width/2;
-        float y = origin.y + closeItem->getContentSize().height/2;
-        closeItem->setPosition(Vec2(x,y));
-    }
+	const char *str4 = ((String*)chnStrings->objectForKey("string4"))->getCString();
+	auto* label_game = Label::create(str4, "Arial", 60);
+	label_game->setPosition(size.width / 2, size.height / 2*1.6);
+	label_game->setTextColor(Color4B(0,255,100,255));
+	this->addChild(label_game);
 
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Vec2::ZERO);
-    this->addChild(menu, 1);
+	auto ball = Sprite::create("BALL5.png");
+	ball->setAnchorPoint(Vec2(0, 0));
+	ball->setScale(1.0);
+	ball->setPosition(0, 0);
+	this->addChild(ball);
 
-    /////////////////////////////
-    // 3. add your codes below...
+	auto ball2 = Sprite::create("BALL5.png");
+	ball2->setAnchorPoint(Vec2(1, 0));
+	ball2->setScale(1.0);
+	ball2->setPosition(size.width, 0);
+	this->addChild(ball2);
 
-    // add a label shows "Hello World"
-    // create and initialize a label
-
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
-
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
-
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
     return true;
 }
 
-
-void HelloWorld::menuCloseCallback(Ref* pSender)
-{
-    //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-    #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
+void HelloWorld::MenuButtonBegin(cocos2d::Ref*pSender) {
+	Director::getInstance()->replaceScene(StartScene::createScene());
+}
+void HelloWorld::MenuButtonHelp(cocos2d::Ref*pSender) {
+	Director::getInstance()->replaceScene(HelpScene::createScene());
+}
+void HelloWorld::MenuButtonOut(cocos2d::Ref*pSender) {
+	Director::getInstance()->end();
 }

@@ -19,7 +19,7 @@ public:
 		NORMAL, //正常状态
 		DIVIDE,  //分身状态,130行
 		SPIT,  //吐球状态
-		CONCENTRATE  //主动中合状态
+		/*CONCENTRATE  //主动中合状态*/
 	};
 
 	Player();
@@ -55,9 +55,9 @@ public:
 	void GameOver();			//玩家复活
 
 	void divideFinish();		//分身后回到Normal状态；
-	void setConcentrate();		//设置到主动中合状态；
+	/*void setConcentrate();		//设置到主动中合状态；*/
 	void collidePrickFinish();	//碰到刺回到中合状态；
-	void concentrate();			//玩家分身中合；
+	/*void concentrate();			//玩家分身中合；*/
 	
 
 	Rect getPlayerRect();		//获取围住玩家所有分身的长方形；
@@ -67,7 +67,6 @@ public:
 	std::string getPlayerName();//设置玩家名称；
 	int getTotalScore();        //得到玩家分身分数之和即游戏分数；
 	Vector<PlayerDivision *> & getDivisionList();//获取分身列表；
-
 	void clearDivisionList();
 private:
 	Vector<PlayerDivision *> _divisionList;		//玩家分身列表
