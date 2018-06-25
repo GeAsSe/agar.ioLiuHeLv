@@ -1,6 +1,6 @@
 #include "TCPListener.h"
 #include "TCPClienter.h"
-#include "CommPool.h"
+#include "/Cgame/Classes/Web/Core/CommPool.h"
 
 namespace KxServer {
 

@@ -1,7 +1,6 @@
 #pragma once
 #include "cocos2d.h"
 #include "KXServer.h"
-#include "cocos2d.h"
 USING_NS_CC;
 using namespace KxServer;
 

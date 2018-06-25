@@ -5,6 +5,7 @@
 #include "cocos2d.h"
 /*#include "Header\Common.h"*/
 #include "ui\CocosGUI.h"
+#include<vector>
 
 USING_NS_CC;
 using namespace ui;
@@ -25,20 +26,17 @@ public:
 	CREATE_FUNC(GameLayer);
 
 	virtual void onExit();
-	/*
-	bool onTouchBegan(Touch * touch, Event * event);
-	void onTouchMoved(Touch * touch, Event * event);
-	void onTouchEnded(Touch * touch, Event * event);
-	void onTouchCancelled(Touch * touch, Event * event);
-	*/
+
 	virtual void update(float dt);		//游戏中每帧更新
 
-	void initData();			//初始化地图数据
-	void initRival(rapidjson::Value &value);		//初始化对手
-	void initPlayer(rapidjson::Value &value);		//初始化玩家
+	//void initData(int seed,);			//初始化地图数据
+	void initRival(std::vector<int>playerIDs,
+	int rivalNum, std::vector<std::string>playernames, std::vector<int> KeywordIDs,
+	std::vector<int>divisionNum, std::vector<double>positions, std::vector<int>scores);		//初始化对手
+	void initPlayer(int ID, std::string name, int KeywordID, int divisionNum, std::vector<double>positions, std::vector<int>score);		//初始化玩家
 	void initFood(int seed);						//初始化豆子
-	void initSpore(rapidjson::Value &value);		//初始化孢子
-	void initPrick(rapidjson::Value &value);		//初始化绿刺
+	void initSpore(int sporeNum, std::vector<int>globalIDs, std::vector<double> position);		//初始化孢子
+	void initPrick(int prickNum, std::vector<int> globalIDs, std::vector<double>position);		//初始化绿刺
 
 
 	/*单机调试函数*/
@@ -57,8 +55,8 @@ public:
 	void updateScore(float dt);		//更新分数
 
 	/*单机调试函数*/
-	void startAddPrick(float dt);
-	void addPrick(float dt);
+	void startAddPrick(float dt);//单机刷刺
+	void addPrick(float dt);//单机加刺
 
 	void collideFood(Player * player);		//与豆子的碰撞检测
 	void collide();			//碰撞检测
@@ -66,37 +64,27 @@ public:
 	void spitSpore();		//吐孢子操作
 	void dividePlayer();		//分身操作
 	void resetFood(Node * node);		//重置豆子
-	void resetPlayer();
-
+	/*将玩家信息上传*/
 	void synPlayerMove();		//同步玩家移动
 	void synPlayerInfo();		//同步玩家信息
 	void synSporeInfo();		//同步孢子
-	void synPlayerConcentrate();		//同步玩家中合操作
-
-										/*处理服务器返回消息*/
-	void playerMoveEvent(EventCustom * event);
-	void playerDivideEvent(EventCustom * event);
-	void spitSporeResultEvent(EventCustom * event);
-	void addPrickEvent(EventCustom * event);
-	void enterPlayerEvent(EventCustom * event);
-	void playerConcentrateEvent(EventCustom * event);
-	void updatePlayerEvent(EventCustom * event);
-
-	void sendTimeChange(float dt);
+    /*处理服务器返回消息*/
+	void playerMoveEvent(int playerID,std::vector<double>position);
+	void playerDivideEvent(int playerID);
+	void spitSporeResultEvent(int playerID, int globalID, int sporeCount);
+	void addPrickEvent(int globalID, int x, int y);
+	void enterPlayerEvent(int playerID, std::string playername, int KeywordID, int divisionNum, std::vector<double>position, std::vector<int>scores);
+	void updatePlayerEvent(int playerID, int divisionNum, std::vector<double>position, std::vector<int> scores);
 private:
-	Joystick * _joystick;		//虚拟摇杆
 	Node * _map;				//地图
 	Player * _player;			//玩家
-	Map<std::string, Player *> _rivalMap;		//对手列表
+	Map<int, Player *> _rivalMap;		//对手列表
 	Vector<Food *> _foodList;			//豆子列表
-	Vector<PlayerDivision *> _divisionList; //分身列表；
 	Map<int, Prick *> _prickMap;			//绿刺
 	Map<int, Spore *> _sporeMap;			//孢子
 	std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
 	float _mapScale;			//地图缩放因子
-	float _timeCount;
-	int _mode;			//游戏模式
-	int _roomID;		//房间id
+	int _ID;                  //玩家ID；
 };
 
 #endif

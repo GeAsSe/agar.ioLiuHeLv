@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include "ICore.h"
-
 #define MAX_LEN 256
 
 inline void KxLog(const char* format, ...)

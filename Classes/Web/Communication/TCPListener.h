@@ -9,7 +9,7 @@
 #ifndef __TCPLISTENER_H__
 #define __TCPLISTENER_H__
 
-#include "ICore.h"
+#include "/Cgame/Classes/Web/Core/ICore.h"
 #include "BaseSocket.h"
 
 namespace KxServer {

@@ -620,13 +620,7 @@ std::string  Player::getPlayerName()
 
 void Player::GameOver()
 {
-	/*int xPosition = rand() % MAP_WIDTH;
-	int yPosition = rand() % MAP_HEIGHT;
-	Vec2 position = Vec2(xPosition, yPosition);
-	auto division = this->createDivision(position, Vec2::ZERO, PLAYER_INITIAL_SCORE);
-	_map->addChild(division, PLAYER_INITIAL_SCORE);*/
 	/*Director::getInstance()->replaceScene(EndScene::createScene());*/
-	/*_velocity = Vec2::ZERO;*/
 }
 
 int Player::getTotalScore()

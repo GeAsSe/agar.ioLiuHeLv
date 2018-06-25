@@ -142,7 +142,6 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 			xml.GetContent("info/message", message);
 		}
 		else if (strMethod == "COLLIDE") {
-			//通知运行collide函数
 			layer->collide();
 		}
 		else if (strMethod == "START") {

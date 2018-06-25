@@ -1,20 +1,21 @@
-#ifndef _GameScene_H_
-#define _GameScene_H_
-
+#pragma once
+#ifndef __GAMESCENE_H__
+#define __GAMESCENE_H__
 #include "cocos2d.h"
-#include "ui/CocosGUI.h"
 #include "extensions/cocos-ext.h"  
 USING_NS_CC;
 using namespace ui;
+#define MAX_COUNT 5
 
-
-
-class GameScene : public Layer {
+class GameScene :public cocos2d::Layer
+{
+	cocos2d::Vector<cocos2d::Label*> Labels;
 public:
-	static Scene * createScene();
-
+	GameScene();
+	~GameScene();
+	
+	static cocos2d::Scene* createScene();
 	virtual bool init();
-
 	virtual void update(float delta);
 	Label *newsLabel;
 	Label *newsLabe2;
@@ -22,11 +23,12 @@ public:
 	Label *newsLabe4;
 	Label *newsLabe5;
 	virtual void onExit();
+	std::string exml = "djshaf";
 	float getscore();
 	void changescore(float a);
-	EditBox *editBox;
-	String get_content();
-	void Key_rect();
+    EditBox *editBox ;
+	
+    void Key_rect();
 	CREATE_FUNC(GameScene);
 private:
 	float score;
@@ -37,4 +39,5 @@ private:
 	std::string content5;
 	char data[20];
 };
-#endif
+
+#endif // !

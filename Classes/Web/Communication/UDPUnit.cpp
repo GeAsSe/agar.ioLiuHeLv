@@ -1,6 +1,6 @@
 #include "UDPUnit.h"
-#include "CommPool.h"
-#include "MemPool.h"
+#include "/Cgame/Classes/Web/Core/CommPool.h"
+#include "/Cgame/Classes/Web/Core/MemPool.h"
 
 using namespace KxServer;
 

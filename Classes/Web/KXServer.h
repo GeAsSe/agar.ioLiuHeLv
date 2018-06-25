@@ -1,23 +1,23 @@
 #ifndef __KXSERVER_H__
 #define __KXSERVER_H__
 
-#include "ICore.h"
-#include "TimerManager.h"
-#include "MemPool.h"
-#include "BufferList.h"
-#include "CommPool.h"
-#include "Ref.h"
+#include "Core/ICore.h"
+#include "Core/TimerManager.h"
+#include "Core/MemPool.h"
+#include "Core/BufferList.h"
+#include "Core/CommPool.h"
+#include "Core/Ref.h"
 
-#include "BaseServer.h"
+#include "ServerBase/BaseServer.h"
 
-#include "SelectPoller.h"
-#include "Epoller.h"
-#include "BaseSocket.h"
-#include "TCPListener.h"
-#include "TCPConnector.h"
-#include "TCPClienter.h"
-#include "UDPUnit.h"
+#include "communication/SelectPoller.h"
+#include "communication/Epoller.h"
+#include "communication/BaseSocket.h"
+#include "communication/TCPListener.h"
+#include "communication/TCPConnector.h"
+#include "communication/TCPClienter.h"
+#include "communication/UDPUnit.h"
 
-#include "KxLog.h"
+#include "Core/KxLog.h"
 
 #endif

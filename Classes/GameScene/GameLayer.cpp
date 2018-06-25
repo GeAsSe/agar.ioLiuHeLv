@@ -1,4 +1,3 @@
-
 #include "GameLayer.h"
 /*#include "Tools/Joystick/Joystick.h"*/
 #include "Entity/Entity.h"
@@ -9,7 +8,7 @@
 #include "Header\AppMacros.h"
 #include "Entity/PlayerDivision.h"
 /*#include "../SceneManager.h"*/
-/*
+
 enum GameLayerZOrder
 {
 	GAME_LAYER_BACKGROUND_Z,
@@ -29,7 +28,6 @@ GameLayer::~GameLayer()
 	_foodList.clear();
 	_sporeMap.clear();
 	_prickMap.clear();
-	_divisionList.clear();
 	_eventDispatcher->removeCustomEventListeners("Divide");
 	_eventDispatcher->removeCustomEventListeners("Spit");
 	_eventDispatcher->removeCustomEventListeners("PlayerMove");
@@ -37,7 +35,7 @@ GameLayer::~GameLayer()
 	_eventDispatcher->removeCustomEventListeners("SpitSporeResult");
 	_eventDispatcher->removeCustomEventListeners("AddPrick");
 	_eventDispatcher->removeCustomEventListeners("EnterPlayer");
-	_eventDispatcher->removeCustomEventListeners("PlayerConcentrate");
+	//_eventDispatcher->removeCustomEventListeners("PlayerConcentrate");
 	_eventDispatcher->removeCustomEventListeners("UpdatePlayer");
 }
 
@@ -55,7 +53,7 @@ bool GameLayer::init()
 	_map->setContentSize(Size(MAP_WIDTH, MAP_HEIGHT));
 	this->addChild(_map, GAME_LAYER_MAP_Z);
 
-	initData();
+	//initData();       //拿出来
 	//initDataDefault();
 	/*
 	_joystick = Joystick::create("gameScene/base.png", "gameScene/joystick.png");
@@ -72,24 +70,23 @@ bool GameLayer::init()
 	listener->onTouchCancelled = CC_CALLBACK_2(GameLayer::onTouchCancelled, this);
 	*/
 	//鼠标操作；
-/*
 	auto listener = EventListenerMouse::create(); 
-	listener->onMouseMove = [=](Event *event)
+	myMouseListener->onMouseMove = [=](Event *event)
 	{
 		EventMouse* e = (EventMouse*)event;
 		Vec2 position = e->getLocation();
-		int num = _player->getDivisionNum();
-		_divisionList = _player->getDivisionList();
-		for (int i = 0; i < num; i++)
+		for (auto division : _player->getDivisionList())
 		{
-			auto division = _divisionList.at(i);
-			Vec2 Dposition = division->getPosition();
-			Vec2 velocity = position - Dposition;
-			velocity.normalize();
-			division->setVelocity(velocity);
+			if (division != NULL) {
+				Vec2 Dposition = division->getPosition();
+				Vec2 velocity = position - Dposition;
+				velocity.normalize();
+				division->setVelocity(velocity);
+			}
 		}
 	};
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
 
 	_eventDispatcher->addCustomEventListener("Divide", CC_CALLBACK_0(GameLayer::dividePlayer, this));
 	_eventDispatcher->addCustomEventListener("Spit", CC_CALLBACK_0(GameLayer::spitSpore, this));
@@ -98,7 +95,7 @@ bool GameLayer::init()
 	_eventDispatcher->addCustomEventListener("SpitSporeResult", CC_CALLBACK_1(GameLayer::spitSporeResultEvent, this));
 	_eventDispatcher->addCustomEventListener("AddPrick", CC_CALLBACK_1(GameLayer::addPrickEvent, this));
 	_eventDispatcher->addCustomEventListener("EnterPlayer", CC_CALLBACK_1(GameLayer::enterPlayerEvent, this));
-	_eventDispatcher->addCustomEventListener("PlayerConcentrate", CC_CALLBACK_1(GameLayer::playerConcentrateEvent, this));
+	//_eventDispatcher->addCustomEventListener("PlayerConcentrate", CC_CALLBACK_1(GameLayer::playerConcentrateEvent, this));
 	_eventDispatcher->addCustomEventListener("UpdatePlayer", CC_CALLBACK_1(GameLayer::updatePlayerEvent, this));
 
 	this->scheduleUpdate();//刷新update函数
@@ -147,7 +144,7 @@ void GameLayer::onTouchCancelled(Touch * touch, Event * event)
 	_joystick->onTouchCancelled(touch, event);
 }//huan 成鼠标
 */
-/*
+
 void GameLayer::update(float dt)
 {
 	updateFood();
@@ -157,124 +154,54 @@ void GameLayer::update(float dt)
 	_player->updateDivision();
 	//updateRival(); //每个玩家信息由玩家客户端自己更新
 	updateView();
-	collide();
-
 	synPlayerInfo();
 	//synPlayerMove();
 	synSporeInfo();
 }
 
-void GameLayer::initData()
+
+
+void GameLayer::initRival(std::vector<int>playerIDs,
+	int rivalNum,std::vector<std::string>playernames, std::vector<int> KeywordIDs,
+	std::vector<int>divisionNum,std::vector<double>positions,std::vector<int>scores)
 {
-	std::string config;
-	WebSocketManager::getInstance()->getGameConfig(GameMode::eMode_SINGLE, config);
-	if (config != "")
+	int l = 0;
+	int k = 0;
+	for (int i = 0; i < rivalNum; i++)
 	{
-		rapidjson::Document doc;
-		doc.Parse<0>(config.c_str());
-		if (doc.HasParseError())
-		{
-			log("GetParseError %d\n", doc.GetParseError());
-			return;
-		}
-
-		if (doc.IsObject())
-		{
-			if (doc.HasMember("RoomID"))
-			{
-				_roomID = doc["RoomID"].GetInt();
-			}
-
-			if (doc.HasMember("RoomSeed"))
-			{
-				int seed = doc["RoomSeed"].GetInt();
-				initFood(seed);
-			}
-
-			if (doc.HasMember("PassTime"))
-			{
-				double passtime = doc["PassTime"].GetDouble();
-				_timeCount = passtime;
-				this->scheduleOnce(schedule_selector(GameLayer::sendTimeChange), 0.1f);
-
-			}
-
-			if (doc.HasMember("SporeList"))
-			{
-				rapidjson::Value & value = doc["SporeList"];
-				initSpore(value);
-			}
-
-			if (doc.HasMember("PrickList"))
-			{
-				rapidjson::Value & value = doc["PrickList"];
-				initPrick(value);
-			}
-
-			if (doc.HasMember("RivalList"))
-			{
-				rapidjson::Value & value = doc["RivalList"];
-				initRival(value);
-			}
-
-			if (doc.HasMember("Player"))
-			{
-				rapidjson::Value & value = doc["Player"];
-				initPlayer(value);
-			}
-		}
-	}
-}
-
-void GameLayer::initRival(rapidjson::Value &value)
-{
-	int size = value.Size();
-	for (int i = 0; i < size; i++)
-	{
-		std::string accountName = value[i]["AccountName"].GetString();
-		std::string gameName = value[i]["GameName"].GetString();
-		int keywordID = value[i]["KeywordID"].GetInt();
-		double vx = value[i]["vx"].GetDouble();
-		double vy = value[i]["vy"].GetDouble();
-		auto player = Player::create(gameName,  keywordID,  _map);
+		int keywordID = KeywordIDs[i];
+		auto player = Player::create(playernames[i],  keywordID,  _map);
 		_map->addChild(player);
-		_rivalMap.insert(accountName, player);
-
-		int divisionNum = value[i]["DivisionList"].Size();
-		for (int j = 0; j < divisionNum; j++)
+		_rivalMap.insert(playerIDs[i], player);
+		for (int j = 0; j < divisionNum[i]; j++)
 		{
-			double x = value[i]["DivisionList"][j][0].GetDouble();
-			double y = value[i]["DivisionList"][j][1].GetDouble();
-			int score = value[i]["DivisionList"][j][2].GetInt();
-			double vx = value[i]["DivisionList"][j][3].GetDouble();
-			double vy = value[i]["DivisionList"][j][4].GetDouble();
-			auto division = player->createDivision(Vec2(x, y), Vec2(vx, vy), score);
+
+			double x = positions[k];
+			double y = positions[k+1];
+			int score = scores[l];
+			auto division = player->createDivision(Vec2(x, y), score);
 			_map->addChild(division, score);
+			l++;
+			k += 2;
 		}
 	}
 }
 
-void GameLayer::initPlayer(rapidjson::Value &value)
+void GameLayer::initPlayer(int ID,std::string name,int KeywordID,int divisionNum,std::vector<double>positions,std::vector<int>scores)
 {
-	std::string accountName = value["AccountName"].GetString();
-	std::string gameName = value["GameName"].GetString();
-	int keywordID = value["KeywordID"].GetInt();
-	double vx = value["vx"].GetDouble();
-	double vy = value["vy"].GetDouble();
-	_player = Player::create(gameName, keywordID, Vec2(vx, vy), _map);
+	_ID = ID;
+	_player = Player::create(name, KeywordID,_map);
 	_map->addChild(_player);
-	int divisionNum = value["DivisionList"].Size();
+	int i = 0;
 	for (int j = 0; j < divisionNum; j++)
 	{
-		double x = value["DivisionList"][j][0].GetDouble();
-		double y = value["DivisionList"][j][1].GetDouble();
-		int score = value["DivisionList"][j][2].GetInt();
-		double vx = value["DivisionList"][j][3].GetDouble();
-		double vy = value["DivisionList"][j][4].GetDouble();
-		auto division = _player->createDivision(Vec2(x, y), Vec2(vx, vy), score);
+		double x = positions[i];
+		double y = positions[i+1];
+		int score = scores[j];
+		auto division = _player->createDivision(Vec2(x, y), score);
 		_map->addChild(division, score);
+		i += 2;
 	}
-
 	_player->updateDivision();
 	updateView();
 }
@@ -305,34 +232,35 @@ void GameLayer::initFood(int seed)
 	}
 }
 
-void GameLayer::initSpore(rapidjson::Value &value)
+void GameLayer::initSpore(int sporeNum,std::vector<int>globalIDs, std::vector<double> position)
 {
-	int size = value.Size();
-	for (int i = 0; i < size; i++)
+	int j = 0;
+	for (int i = 0; i < sporeNum; i++)
 	{
-		int globalID = value[i][0].GetInt();
-		int sporeID = value[i][1].GetInt();
-		double x = value[i][2].GetDouble();
-		double y = value[i][3].GetDouble();
+		int globalID = globalIDs[i];
+		double x = position[j];
+		double y = position[j + 1];
 		Spore * spore = Spore::create("public/keyword_1.png");
 		spore->setPosition(x, y);
 		_map->addChild(spore, spore->getScore());
 		_sporeMap.insert(globalID, spore);
+		j += 2;
 	}
 }
 
-void GameLayer::initPrick(rapidjson::Value &value)
+void GameLayer::initPrick(int prickNum,std::vector<int> globalIDs,std::vector<double>position)
 {
-	int size = value.Size();
-	for (int i = 0; i < size; i++)
+	int j = 0;
+	for (int i = 0; i < prickNum; i++)
 	{
-		int globalID = value[i][0].GetInt();
-		int x = value[i][1].GetInt();
-		int y = value[i][2].GetInt();
+		int globalID = globalIDs[i];
+		double x = position[j];
+		double y = position[j + 1];
 		Prick * prick = Prick::create("gameScene/prick.png");
 		prick->setPosition(x, y);
 		_map->addChild(prick, prick->getScore());
 		_prickMap.insert(globalID, prick);
+		j += 2;
 	}
 }
 
@@ -532,7 +460,7 @@ void GameLayer::updatePrick()
 	}
 	vecDel.clear();
 }
-/*
+
 void GameLayer::updateRank(float dt)
 {
 	Vector<Player *> vec;
@@ -588,40 +516,8 @@ void GameLayer::collide()
 		}
 
 	}
-
-	/*for (auto item1 : _rivalMap)
-	{
-	auto rival1 = item1.second;
-
-	if (rival1 != NULL)
-	{
-	for (auto item2 : _rivalMap)
-	{
-	auto rival2 = item2.second;
-	if (rival2 != NULL && item1 != item2)
-	{
-	if (rival1->collideRival(rival2))
-	{
-	float rival1DivisionCount = rival1->getDivisionNum();
-	float rival2DivisionCount = rival2->getDivisionNum();
-	if (rival1DivisionCount == 0)
-	{
-	rival1->resetPlayer();
-	break;
-	}
-
-	if (rival2DivisionCount == 0)
-	{
-	rival2->resetPlayer();
-	}
-	}
-	}
-	}
-	}
-
-	}*/
 }
-/*
+
 void GameLayer::spitSpore()
 {
 	int sporeCount = _player->countSpitSporeNum();
@@ -669,11 +565,6 @@ void GameLayer::dividePlayer()
 void GameLayer::resetFood(Node * node)
 {
 	node->setVisible(true);
-}
-
-void GameLayer::resetPlayer()
-{
-
 }
 
 void GameLayer::synPlayerInfo()
@@ -731,74 +622,38 @@ void GameLayer::initDataDefault()
 	initFood();
 }
 
-void GameLayer::playerMoveEvent(EventCustom * event)
+void GameLayer::playerMoveEvent(int playerID, std::vector<double>position)
 {
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		std::string accountName = doc["AccountName"].GetString();
-		double vx = doc["vx"].GetDouble();
-		double vy = doc["vy"].GetDouble();
-		auto rival = _rivalMap.at(accountName);
+		auto rival = _rivalMap.at(playerID);
 		if (rival != NULL)
 		{
-			rival->setVelocity(Vec2(vx, vy));
+			int i = 0;
+			for (auto division : rival->getDivisionList())
+			{
+				double pox = position[i];
+				double poy = position[i+1];
+				division->setPosition(pox, poy);
+				i += 2;
+			}
 		}
-	}
 }
 
-void GameLayer::playerDivideEvent(EventCustom * event)
+void GameLayer::playerDivideEvent(int playerID)
 {
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		std::string accountName = doc["AccountName"].GetString();
-		auto rival = _rivalMap.at(accountName);
+		auto rival = _rivalMap.at(playerID);
 		if (rival != NULL)
 		{
 			rival->dividePlayer();
 		}
-	}
 }
 
-void GameLayer::addPrickEvent(EventCustom * event)
+void GameLayer::addPrickEvent(int globalID, int x, int y)
 {
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		int globalID = doc["GlobalID"].GetInt();
-		int x = doc["X"].GetInt();
-		int y = doc["Y"].GetInt();
 		Prick * prick = Prick::create("gameScene/prick.png");
 		prick->setPosition(Vec2(x, y));
 		prick->setLocalZOrder(prick->getScore());
 		_map->addChild(prick);
 		_prickMap.insert(globalID, prick);
-	}
 }
 
 void GameLayer::synSporeInfo()
@@ -851,40 +706,22 @@ void GameLayer::synSporeInfo()
 	WebSocketManager::getInstance()->sendMsg(msg);
 }
 
-void GameLayer::spitSporeResultEvent(EventCustom * event)
+void GameLayer::spitSporeResultEvent(int playerID,int globalID,int sporeCount)
 {
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		std::string accountName = WebSocketManager::getInstance()->getAccountName();
-		std::string name = doc["AccountName"].GetString();
-		int globalID = doc["GlobalID"].GetInt();
-		int sporeCount = doc["SporeCount"].GetInt();
-
-		if (accountName == name)
+		if (playerID == _ID)
 		{
 			_player->spitSpore(_map, _sporeMap, globalID);
 			for (int i = 0; i < sporeCount; i++)
 			{
 				_vecSporeNeedUpdate.push_back(globalID + i);
 			}
-
 		}
 		else
 		{
-			auto rival = _rivalMap.at(name);
+			auto rival = _rivalMap.at(playerID);
 			rival->spitSpore(_map, _sporeMap, globalID);
 		}
 
-	}
 }
 
 void GameLayer::synPlayerMove()
@@ -912,131 +749,57 @@ void GameLayer::synPlayerMove()
 	WebSocketManager::getInstance()->sendMsg(msg);
 }
 
-void GameLayer::enterPlayerEvent(EventCustom * event)
+void GameLayer::enterPlayerEvent(int playerID,std::string playername,int KeywordID,int divisionNum,std::vector<double>position,std::vector<int>scores)
 {
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-
-	if (doc.IsObject())
-	{
-		std::string accountName = doc["PlayerInfo"]["AccountName"].GetString();
-		log("Player : %s enter room", accountName.c_str());
-
-		std::string gameName = doc["PlayerInfo"]["GameName"].GetString();
-		int keywordID = doc["PlayerInfo"]["KeywordID"].GetInt();
-		double vx = doc["PlayerInfo"]["vx"].GetDouble();
-		double vy = doc["PlayerInfo"]["vy"].GetDouble();
-		auto player = Player::create(gameName, keywordID, Vec2(vx, vy), _map);
+		auto player = Player::create(playername, KeywordID, _map);
 		_map->addChild(player);
-		_rivalMap.insert(accountName, player);
-
-		int divisionNum = doc["PlayerInfo"]["DivisionList"].Size();
-		for (int j = 0; j < divisionNum; j++)
+		_rivalMap.insert(playerID, player);
+		for (int j = 0,i = 0; i < divisionNum;)
 		{
-			double x = doc["PlayerInfo"]["DivisionList"][j][0].GetDouble();
-			double y = doc["PlayerInfo"]["DivisionList"][j][1].GetDouble();
-			int score = doc["PlayerInfo"]["DivisionList"][j][2].GetInt();
-			double vx = doc["PlayerInfo"]["DivisionList"][j][3].GetDouble();
-			double vy = doc["PlayerInfo"]["DivisionList"][j][4].GetDouble();
-			auto division = player->createDivision(Vec2(x, y), Vec2(vx, vy), score);
+			double x = position[j];
+			double y = position[j + 1];
+			int score = scores[i];
+			auto division = player->createDivision(Vec2(x, y), score);
 			_map->addChild(division, score);
+			i++;
+			j += 2;
 		}
-	}
 }
 
-void GameLayer::synPlayerConcentrate()
+
+void GameLayer::updatePlayerEvent(int playerID,int divisionNum,std::vector<double>position,std::vector<int> scores)
 {
-	std::string accountName = WebSocketManager::getInstance()->getAccountName();
 
-	rapidjson::Document doc;
-	doc.SetObject();
-	rapidjson::Document::AllocatorType & allocator = doc.GetAllocator();
 
-	doc.AddMember("MsgType", MessageType::eMsg_PLAYER_CONCENTRATE, allocator);
-	doc.AddMember("AccountName", rapidjson::Value(accountName.c_str(), allocator), allocator);
-
-	rapidjson::StringBuffer buffer;
-	rapidjson::Writer<rapidjson::StringBuffer> write(buffer);
-	doc.Accept(write);
-
-	std::string msg = buffer.GetString();
-	WebSocketManager::getInstance()->sendMsg(msg);
-}
-
-void GameLayer::playerConcentrateEvent(EventCustom * event)
-{
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		std::string accountName = doc["AccountName"].GetString();
-		auto rival = _rivalMap.at(accountName);
-		if (rival != NULL)
-		{
-			rival->concentrate();
-		}
-	}
-}
-
-void GameLayer::updatePlayerEvent(EventCustom * event)
-{
-	char * msg = (char *)event->getUserData();
-	rapidjson::Document doc;
-	doc.Parse<0>(msg);
-	if (doc.HasParseError())
-	{
-		log("GetParseError %d\n", doc.GetParseError());
-		return;
-	}
-
-	if (doc.IsObject())
-	{
-		std::string accountName = doc["AccountName"].GetString();
-		auto rival = _rivalMap.at(accountName);
+		auto rival = _rivalMap.at(playerID);
 		if (rival != NULL)
 		{
 			int oldSize = rival->getDivisionNum();
-			int newSize = doc["DivisionList"].Size();
-			double vx = doc["vx"].GetDouble();
-			double vy = doc["vy"].GetDouble();
-			rival->setVelocity(Vec2(vx, vy));
-
+			int newSize = divisionNum;
 			if (oldSize != newSize)
 			{
 				rival->clearDivisionList();
-				for (int i = 0; i < newSize; i++)
+				for (int i = 0,j=0; i < newSize; i++)
 				{
-					double x = doc["DivisionList"][i][0].GetDouble();
-					double y = doc["DivisionList"][i][1].GetDouble();
-					int score = doc["DivisionList"][i][2].GetInt();
-					auto division = rival->createDivision(Vec2(x, y), Vec2(0, 0), score);
+					double x = position[j];
+					double y = position[j + 1];
+					int score = scores[i];
+					auto division = rival->createDivision(Vec2(x, y), score);
 					_map->addChild(division, score);
+					j += 2;
 				}
 
 			}
 			else
 			{
 				Vector<PlayerDivision *> divisionList = rival->getDivisionList();
-				int i = 0;
+				int i = 0, j = 0;
 				for (auto division : divisionList)
 				{
-					double x = doc["DivisionList"][i][0].GetDouble();
-					double y = doc["DivisionList"][i][1].GetDouble();
-					int score = doc["DivisionList"][i][2].GetInt();
+					double x = position[j];
+					double y = position[j + 1];
+					int score = scores[i];
+
 					if (division != NULL)
 					{
 						division->setPosition(Vec2(x, y));
@@ -1044,17 +807,11 @@ void GameLayer::updatePlayerEvent(EventCustom * event)
 
 					}
 					i++;
+					j += 2;
 				}
 			}
 
 		}
-	}
-}
-
-void GameLayer::sendTimeChange(float dt)
-{
-	_timeCount -= dt;
-	//Director::getInstance()->getEventDispatcher()->dispatchCustomEvent("StartCountTime", &_timeCount);
 }
 
 void GameLayer::updateFood()
@@ -1235,6 +992,7 @@ void GameLayer::startAddPrick(float dt)
 
 void GameLayer::addPrick(float dt)
 {
+
 	static int id = 0;
 	Prick * prick = Prick::create("gameScene/prick.png");
 	int xPosition = rand() % MAP_WIDTH;
