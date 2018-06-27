@@ -16,11 +16,9 @@ public:
 	virtual bool init();
 
 	EditBox *NeditBox;
-	String getname();
 	CREATE_FUNC(StartScene);
 
-private:
-	std::string nameid;
+
 };
 
 #endif // ! __STARTSCENE_H__

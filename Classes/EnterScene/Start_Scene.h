@@ -19,10 +19,9 @@ public:
 	void put2(cocos2d::Ref*pSender);
 	void put3(cocos2d::Ref*pSender);
 	void put4(cocos2d::Ref*pSender);
-    int getballcolor();
 	CREATE_FUNC(Start_Scene);
 private:
-	int BALLCOLOR;
+
 
 };
 

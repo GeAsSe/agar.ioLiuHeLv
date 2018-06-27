@@ -2,6 +2,7 @@
 #include"Start_Scene.h"
 #include "ui/CocosGUI.h"  
 #include "extensions/cocos-ext.h"  
+#include"proj.win32\nameancolor.h"
 using namespace ui;
 USING_NS_CC;
 
@@ -56,9 +57,9 @@ bool StartScene::init()
 	Exchangebuttom->setPosition(size.width / 2 +180, size.height / 2+30);
 	Exchangebuttom->setCallback([&, NeditBox](Ref*obj) {
 		log("name:%s", NeditBox->getText());
-		nameid = NeditBox->getText();
-		getname();
-		if (nameid != "") {
+		auto pnnc = CSingleton<nameandcolor>::GetInstancePtr();
+			 pnnc->name = NeditBox->getText();
+		if (pnnc->name != "") {
 			Director::getInstance()->replaceScene(Start_Scene::createScene());
 		}
 		//NeditBox->setText("");
@@ -87,9 +88,4 @@ bool StartScene::init()
 	this->addChild(ball2);
 	
 	return true;
-}
-
-String StartScene::getname()
-{
-	return nameid;
 }
