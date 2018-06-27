@@ -4,6 +4,7 @@
 #include "Prick.h"
 #include"Food.h"
 #include "Header/AppMacros.h"
+#include"Classes\EndScene\EndScene.h"
 
 Player::Player()
 {
@@ -412,7 +413,7 @@ void Player::spitSpore(Node * map, Map<int, Spore *> & sporeMap, int globalID)
 				Vec2 position = division->getPosition();
 				float angle = division->getVelocity().getAngle();
 				float radius = division->getRadius();
-				Spore * spore = Spore::create("public/spore_1.png");
+				Spore * spore = Spore::create("spore.png");
 				Vec2 sporePosition = Vec2(position.x + radius * cosf(angle) * 2, position.y + radius * sinf(angle) * 2);
 				spore->setPosition(sporePosition);
 
@@ -620,7 +621,7 @@ std::string  Player::getPlayerName()
 
 void Player::GameOver()
 {
-	/*Director::getInstance()->replaceScene(EndScene::createScene());*/
+	Director::getInstance()->replaceScene(EndScene::createScene());
 }
 
 int Player::getTotalScore()

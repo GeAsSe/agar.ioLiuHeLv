@@ -24,7 +24,7 @@ Food * Food::create(const std::string& filename)
 
 bool Food::init(const std::string& filename)
 {
-	if (!Entity::initWithSpriteFrameName(filename))
+	if (!Entity::initWithFile(filename))
 	{
 		return false;
 	}

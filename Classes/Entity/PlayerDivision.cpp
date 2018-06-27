@@ -51,7 +51,7 @@ bool PlayerDivision::init(const std::string &name,  int keywordID, int score)
 	_name = name;
 	_keywordID = keywordID;
 
-	if (!Entity::initWithFile(StringUtils::format("public/keyword_%d.png", _keywordID)))
+	if (!Entity::initWithFile(StringUtils::format("BALL%d.png", _keywordID)))
 	{
 		return false;
 	}
