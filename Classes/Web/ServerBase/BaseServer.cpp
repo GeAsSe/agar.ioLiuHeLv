@@ -1,5 +1,5 @@
 #include "BaseServer.h"
-#include "/Cgame/Classes/Web/Core/TimerManager.h"
+#include "Web/Core/TimerManager.h"
 
 namespace KxServer {
 

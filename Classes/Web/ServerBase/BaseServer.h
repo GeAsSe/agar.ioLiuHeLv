@@ -7,7 +7,7 @@
 #ifndef __BASESERVER_H__
 #define __BASESERVER_H__
 
-#include "/Cgame/Classes/Web/Core/ICore.h"
+#include "Web/Core/ICore.h"
 
 namespace KxServer {
 
