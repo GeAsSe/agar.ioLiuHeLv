@@ -31,23 +31,16 @@ bool EndScene::init()
 	this->addChild(pBackgroud,0);
 	auto lable = Label::create("YOU DIED! ", "Arial", 60);
 	lable->setTextColor(Color4B::RED);
-	lable->setPosition(size.width / 2, size.height / 2+160);
+	lable->setPosition(size.width / 2, size.height / 2+120);
 	addChild(lable);
-	auto lable2 = Label::create("RANK ", "Arial", 36);
-	lable2->setTextColor(Color4B::RED);
-	lable2->setPosition(size.width / 2-280, size.height / 2+60);
-	addChild(lable2);
-	auto lable3 = Label::create("MAXSIZE ", "Arial", 36);
-	lable3->setTextColor(Color4B::BLACK);
-	lable3->setPosition(size.width / 2 - 280, size.height / 2-40);
-	addChild(lable3);
+	
 
 	auto pMenuRETRY = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(EndScene::MenuButtonRetry));
 	pMenuRETRY->setScale(1.5);
 	auto labelRetry = LabelTTF::create("RETRY", "Arial", 18);
 	auto pLabeRetry = MenuItemLabel::create(labelRetry);
 	auto menuRetry = Menu::create(pMenuRETRY, pLabeRetry, NULL);
-	menuRetry->setPosition(size.width / 2, size.height / 2 +60);
+	menuRetry->setPosition(size.width / 2, size.height / 2 +20);
 	this->addChild(menuRetry);
 
 	auto pMenuExit = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(EndScene::MenuButtonExit));
@@ -55,8 +48,19 @@ bool EndScene::init()
 	auto labelExit = LabelTTF::create("EXIT", "Arial", 18);
 	auto pLabelExit = MenuItemLabel::create(labelExit);
 	auto menuExit = Menu::create(pMenuExit, pLabelExit, NULL);
-	menuExit->setPosition(size.width / 2, size.height / 2 - 40);
+	menuExit->setPosition(size.width / 2, size.height / 2 - 60);
 	this->addChild(menuExit);
+	auto ball = Sprite::create("BALL5.png");
+	ball->setAnchorPoint(Vec2(0, 0));
+	ball->setScale(0.7);
+	ball->setPosition(0, 0);
+	this->addChild(ball);
+
+	auto ball2 = Sprite::create("BALL5.png");
+	ball2->setAnchorPoint(Vec2(1, 0));
+	ball2->setScale(0.7);
+	ball2->setPosition(size.width, 0);
+	this->addChild(ball2);
 	return true;
 }
 void EndScene::MenuButtonRetry(cocos2d::Ref*pSender){

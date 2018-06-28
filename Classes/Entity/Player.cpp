@@ -45,7 +45,7 @@ bool Player::init(Vec2 position, Node * map)
 	_state = State::NORMAL;
 	_combineEnable = true;
 
-	auto division = this->createDivision(position, /*Vec2::ZERO,*/ PLAYER_INITIAL_SCORE);
+	auto division = this->createDivision(position,  PLAYER_INITIAL_SCORE);
 	_map->addChild(division, PLAYER_INITIAL_SCORE);
 
 	return true;
@@ -86,32 +86,12 @@ PlayerDivision * Player::createDivision(Vec2 position, /*Vec2 velocity,*/ int sc
 	auto division = PlayerDivision::create(_playerName, _keywordID, score);
 	division->setPosition(position);
 	division->setPlayerName(_playerName);
-	/*division->setVelocity(velocity);*/
 	_divisionList.pushBack(division);
 	_divisionNum++;
 	return division;
 }
-/*
-void Player::setVelocity(Vec2 v)
-{
-	_state = State::NORMAL;
 
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			division->setVelocity(v);
-		}
-	}
-	_velocity = v;
-}
-*/
-/*
-Vec2 Player::getVelocity()
-{
-	return _velocity;
-}
-*/
+
 void  Player::dividePlayer()
 {
 	bool divideFlag = false;
@@ -216,15 +196,10 @@ bool Player::collideFood(Food * food)
 	}
 	return false;
 }
-//v改变要改；
+
 void Player::updateDivision()
 {
-	/*
-	if (_state == State::CONCENTRATE)
-	{
-		this->concentrate();
-	}
-	*/
+
 
 	auto rect = this->getPlayerRect();
 
@@ -235,34 +210,14 @@ void Player::updateDivision()
 		if (division != NULL)
 		{
 			float speed = division->getSpeed();
-			/*
-			if (_state == State::CONCENTRATE)
-			{
-				speed = PLAYER_CONCENTRATE_SPEED;
-			}
-			*/
+	
 			Vec2 velocity = division->getVelocity();
 			float dx = velocity.x*speed;
 			float dy = velocity.y*speed;
 			Vec2 divisionVec = Vec2(dx, dy); //分身移动方向
 			Vec2 oldPosition = division->getPosition();
 			Vec2 newPosition = Vec2(oldPosition.x + divisionVec.x, oldPosition.y + divisionVec.y);
-			//不在主动合体状态，也不在分身状态，分身会往中心靠拢
-			/*
-			if (_state != State::CONCENTRATE && _state != State::DIVIDE) 
-			{
-				Vec2 centerVec = rect.origin - oldPosition; // 指向中心方向
-				centerVec.normalize();
-				centerVec.x = centerVec.x*PLAYER_CONCENTRATE_SPEED*0.2;
-				centerVec.y = centerVec.y*PLAYER_CONCENTRATE_SPEED*0.2;
-				Vec2 moveVec = Vec2(centerVec.x + divisionVec.x, centerVec.y + divisionVec.y);
-				float angle = Vec2::angle(centerVec, divisionVec);
-				float cosAngle = cosf(angle);
 
-				if (cosAngle > 0 && cosAngle < 1) //只处理夹角小于90度的情况
-					newPosition = Vec2(oldPosition.x + moveVec.x, oldPosition.y + moveVec.y);
-			}
-			*/
 			float radius1 = division->getRadius();
 			if (!_combineEnable)//不在合体、分身状态，分身会进行碰撞检测
 			{
@@ -281,8 +236,7 @@ void Player::updateDivision()
 							float distance = ((radius1 + radius2) - oldDistance) / 2;
 							Vec2 vec = oldPosition - position2;
 							float angle = vec.getAngle();
-							//newPosition = Vec2(oldPosition.x + cosf(angle), oldPosition.y + sinf(angle));
-							//division2->setPosition(Vec2(position2.x - cosf(angle), position2.y - sinf(angle)));
+
 							break;
 						}
 					}
@@ -457,23 +411,7 @@ void Player::divideFinish()
 {
 	_state = State::NORMAL;
 }
-//可能要改；
-/*
-void Player::concentrate() //主动向中心靠拢
-{
-	auto rect = this->getPlayerRect();
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			Vec2 divisionPosition = division->getPosition();
-			Vec2 velocity = rect.origin - divisionPosition;
-			velocity.normalize();
-			division->setVelocity(velocity);
-		}
-	}
-}
-*/
+
 bool Player::collidePrick(Prick *prick)
 {
 	bool collideFlag = false;
@@ -486,18 +424,34 @@ bool Player::collidePrick(Prick *prick)
 			{
 				int prickScore = prick->getScore();
 				int divisionScore = division->getScore();
+				divisionScore += prickScore;
 
 				/*计算与刺碰撞后生成小球的大小*/
-				int splitScore = (prickScore + divisionScore) / (MAX_EAT_PRICK_DIVISION_NUM + 1);
+				int splitScore = (prickScore + division->getScore()) / (MAX_EAT_PRICK_DIVISION_NUM + 1);
 				if (splitScore >= MAX_EAT_PRICK_SCORE)
 				{
-					splitScore = MAX_EAT_PRICK_SCORE;
-					divisionScore = divisionScore + prickScore - splitScore * (MAX_EAT_PRICK_DIVISION_NUM);
+					for (int i = 0; i < MAX_EAT_PRICK_DIVISION_NUM; i++)
+					{
+						if (_divisionNum + 1 +i>= PLAYER_MAX_DIVISION_NUM)
+						{
+							break;
+						}
+						splitScore = MAX_EAT_PRICK_SCORE;
+						divisionScore = divisionScore - splitScore;
+					}
 					division->eatPrick(divisionScore);
 				}
 				else
 				{
-					division->eatPrick(splitScore);
+					for (int i = 0; i < MAX_EAT_PRICK_DIVISION_NUM; i++)
+					{
+						if (_divisionNum + 1 +i>= PLAYER_MAX_DIVISION_NUM)
+						{
+							break;
+						}
+						divisionScore = divisionScore - splitScore;
+					}
+					division->eatPrick(divisionScore);
 				}
 
 				/*循环创建小球*/
@@ -600,19 +554,6 @@ int Player::collideDivision(PlayerDivision * division)
 	}
 	return flag;
 }
-/*
-float Player::getTotalWeight()
-{
-	float weight = 0;
-	for (auto division : _divisionList)
-	{
-		if (division != NULL)
-		{
-			weight += division->getWeight();
-		}
-	}
-	return weight;
-}*/
 
 std::string  Player::getPlayerName()
 {
@@ -659,6 +600,7 @@ void Player::clearDivisionList()
 {
 	for (auto division : _divisionList)
 	{
+
 		division->removeFromParentAndCleanup(true);
 	}
 	_divisionList.clear();

@@ -63,7 +63,8 @@ CTCPConnector::~CTCPConnector(void)
     {
         CMemManager::GetInstance()->MemRecycle(node->buffer, node->len);
         //delete[] node->buffer;
-        delete node;
+
+		delete node;
         node = m_BufferList.Next();
     }
 }

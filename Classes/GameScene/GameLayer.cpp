@@ -71,10 +71,7 @@ bool GameLayer::init()
 	_map->addChild(pBackgroud);
 
 
-	/*
-	pBackgroud->setPosition(size.width / 2, size.height / 2);
-	addChild(pBackgroud);
-	*/
+
 	this->schedule(schedule_selector(GameLayer::resetpoller));
 	start();
 	
@@ -367,19 +364,19 @@ void GameLayer::updateSpore()
 			Vec2 position = spore->getPosition();
 			if (position.x<SPORE_RADIUS)
 			{
-				position.x = SPORE_RADIUS;
+				position.x = SPORE_RADIUS + 2;
 			}
 			if (position.x>MAP_WIDTH - SPORE_RADIUS)
 			{
-				position.x = MAP_WIDTH - SPORE_RADIUS;
+				position.x = MAP_WIDTH - SPORE_RADIUS - 2;
 			}
 			if (position.y<SPORE_RADIUS)
 			{
-				position.y = SPORE_RADIUS;
+				position.y = SPORE_RADIUS + 2;
 			}
 			if (position.y>MAP_HEIGHT - SPORE_RADIUS)
 			{
-				position.y = MAP_HEIGHT - SPORE_RADIUS;
+				position.y = MAP_HEIGHT - SPORE_RADIUS - 2;
 			}
 			spore->setPosition(position);
 			if (_player->collideSpore(spore))
@@ -790,36 +787,48 @@ void GameLayer::updatePlayerEvent(int playerID,int divisionNum,std::vector<doubl
 			int newSize = divisionNum;
 			if (oldSize != newSize)
 			{
-				rival->clearDivisionList();
-				for (int i = 0,j=0; i < newSize; i++)
-				{
-					double x = position[j];
-					double y = position[j + 1];
-					int score = scores[i];
-					auto division = rival->createDivision(Vec2(x, y), score);
-					_map->addChild(division, score);
-					j += 2;
+				if (newSize == 0) {
+					
+					_rivalMap.erase(playerID);
+					PlayerDivision* pd = rival->getDivisionList().at(0);
+					pd->removeFromParentAndCleanup(true);
+					rival->removeFromParentAndCleanup(true);
+					
 				}
-
+				else {
+					rival->clearDivisionList();
+					for (int i = 0, j = 0; i < newSize; i++)
+					{
+						double x = position[j];
+						double y = position[j + 1];
+						int score = scores[i];
+						auto division = rival->createDivision(Vec2(x, y), score);
+						_map->addChild(division, score);
+						j += 2;
+					}
+				}
 			}
 			else
 			{
-				Vector<PlayerDivision *> divisionList = rival->getDivisionList();
-				int i = 0, j = 0;
-				for (auto division : divisionList)
+				if (newSize != 0)
 				{
-					double x = position[j];
-					double y = position[j + 1];
-					int score = scores[i];
-
-					if (division != NULL)
+					Vector<PlayerDivision *> divisionList = rival->getDivisionList();
+					int i = 0, j = 0;
+					for (auto division : divisionList)
 					{
-						division->setPosition(Vec2(x, y));
-						division->setScore(score);
+						double x = position[j];
+						double y = position[j + 1];
+						int score = scores[i];
 
+						if (division != NULL)
+						{
+							division->setPosition(Vec2(x, y));
+							division->setScore(score);
+
+						}
+						i++;
+						j += 2;
 					}
-					i++;
-					j += 2;
 				}
 			}
 

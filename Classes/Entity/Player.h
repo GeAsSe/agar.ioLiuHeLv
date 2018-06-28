@@ -33,11 +33,10 @@ public:
 	//退出；
 	virtual void onExit();
 
-	/*void setVelocity(Vec2 v);	//设置速度*/
-	/*Vec2 getVelocity();			//获取速度*/
+	
 
 	//创建一个玩家分身；需要位置、速度、得分参数；
-	PlayerDivision * createDivision(Vec2 position, /*Vec2 velocity,*/ int score);
+	PlayerDivision * createDivision(Vec2 position, int score);
 	//计算玩家一次可以吐出几个孢子
 	int countSpitSporeNum();		
 	//吐孢子,需要Map及sporeMap传入和globalID;
@@ -55,15 +54,14 @@ public:
 	void GameOver();			//玩家复活
 
 	void divideFinish();		//分身后回到Normal状态；
-	/*void setConcentrate();		//设置到主动中合状态；*/
+
 	void collidePrickFinish();	//碰到刺回到中合状态；
-	/*void concentrate();			//玩家分身中合；*/
+
 	
 
 	Rect getPlayerRect();		//获取围住玩家所有分身的长方形；
 	void setCombine(float dt);  //设置融合状态,即不在融合或者分裂状态；
 	int getDivisionNum();	    //获取当前分身数量
-	/*float getTotalWeight();*/ //获得分身质量和；
 	std::string getPlayerName();//设置玩家名称；
 	int getTotalScore();        //得到玩家分身分数之和即游戏分数；
 	Vector<PlayerDivision *> & getDivisionList();//获取分身列表；
@@ -76,7 +74,6 @@ private:
 	std::string _playerName;		//玩家名
 	int _keywordID;			//关键字id
 
-	/*Vec2 _velocity;			//速度*/
 	int _color;			//颜色,没有关键字时可用
 
 	State _state;		//玩家状态

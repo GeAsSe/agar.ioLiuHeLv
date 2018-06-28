@@ -49,12 +49,7 @@ public:
 
 	//在分身上加上名字的标签；
 	void setPlayerName(const std::string name);
-	/*
-	//设定、增加、获取球的重量；
-	void addWeight(float weight);
-	void setWeight(float weight);
-	float getWeight();
-	*/
+
 	//设定和获取分身的速度；
 	void setVelocity(Vec2 v);
 	Vec2 getVelocity();

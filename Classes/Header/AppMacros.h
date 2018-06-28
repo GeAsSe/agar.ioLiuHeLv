@@ -1,8 +1,8 @@
 
 
 /*游戏中需要用到的宏定义*/
-#define MAP_WIDTH 2400/*4800*/			//地图宽度，单位像素
-#define MAP_HEIGHT 1800/*3600*/		//地图高度，单位像素
+#define MAP_WIDTH 2400			//地图宽度，单位像素
+#define MAP_HEIGHT 1800     	//地图高度，单位像素
 
 #define DESIGN_SCREEN_WIDTH 800			//设计屏幕分辨率，宽度
 #define DESIGN_SCREEN_HEIGHT 450			//设计屏幕分辨率，高度
@@ -18,8 +18,7 @@
 
 #define PLAYER_INITIAL_RADIUS 21			//玩家初始半径，单位像素
 #define PLAYER_INITIAL_SCORE 10			//玩家初始分值
-//#define PLAYER_INITIAL_RADIUS 50
-//#define PLAYER_INITIAL_SCORE 200
+
 #define PLAYER_INITIAL_SPEED 6			//玩家初始速度
 #define PLAYER_MIN_SPEED 1			//玩家最小速度
 #define PLAYER_MAX_DIVISION_NUM 16			//玩家最大分身数量

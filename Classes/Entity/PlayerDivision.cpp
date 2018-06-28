@@ -170,22 +170,7 @@ void PlayerDivision::scaleSprite()
 	float scale = float(_radius * 2) / size.width;
 	this->setScale(scale);
 }
-/*
-void PlayerDivision::addWeight(float w)
-{
-	_weight += w;
-}
 
-void PlayerDivision::setWeight(float w)
-{
-	_weight = w;
-}
-
-float PlayerDivision::getWeight()
-{
-	return _weight;
-}
-*/
 void PlayerDivision::setVelocity(Vec2 v)
 {
 	_velocity = v;

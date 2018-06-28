@@ -94,6 +94,8 @@ bool HelloWorld::init()
 	menuOut->setPosition(size.width / 2, size.height / 2-60);
 	this->addChild(menuOut);
 
+	
+
     return true;
 }
 
