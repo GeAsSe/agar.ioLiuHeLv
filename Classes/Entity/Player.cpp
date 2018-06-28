@@ -5,6 +5,7 @@
 #include"Food.h"
 #include "Header/AppMacros.h"
 #include"Classes\EndScene\EndScene.h"
+#include <assert.h>
 
 Player::Player()
 {
@@ -16,10 +17,10 @@ Player::~Player()
 	_divisionList.clear();
 }
 
-Player * Player::create(Vec2 position, Node * map)
+Player * Player::create(std::string & name, int keywordID, Node * map)
 {
 	Player * player = new Player();
-	if (player && player->init(position, map))
+	if (player && player->init(name,  keywordID, map))
 	{
 		player->autorelease();
 		return player;
@@ -28,42 +29,7 @@ Player * Player::create(Vec2 position, Node * map)
 	return nullptr;
 }
 
-bool Player::init(Vec2 position, Node * map)
-{
-	if (!Node::init())
-	{
-		return false;
-	}
-
-
-	int nameIndex = rand() % 10 + 1;
-	_playerName = "Hello";
-	//_playerName = CCString::createWithFormat("%s", I18N::shareI18N()->getcStringByKey(nameIndex));
-
-	_map = map;
-	_keywordID = 1;
-	_state = State::NORMAL;
-	_combineEnable = true;
-
-	auto division = this->createDivision(position,  PLAYER_INITIAL_SCORE);
-	_map->addChild(division, PLAYER_INITIAL_SCORE);
-
-	return true;
-}
-
-Player * Player::create(std::string & name, int keywordID, /*Vec2 velocity,*/Node * map)
-{
-	Player * player = new Player();
-	if (player && player->init(name,  keywordID, /*velocity, */map))
-	{
-		player->autorelease();
-		return player;
-	}
-	CC_SAFE_DELETE(player);
-	return nullptr;
-}
-
-bool Player::init(std::string & name,  int keywordID, /*Vec2 velocity,*/ Node * map)
+bool Player::init(std::string & name,  int keywordID, Node * map)
 {
 	if (!Node::init())
 	{
@@ -73,14 +39,13 @@ bool Player::init(std::string & name,  int keywordID, /*Vec2 velocity,*/ Node * 
 	_playerName = name;
 	_map = map;
 	_keywordID = keywordID;
-	/*_velocity = velocity;*/
 	_state = State::NORMAL;
 	_combineEnable = true;
 
 	return true;
 }
 
-PlayerDivision * Player::createDivision(Vec2 position, /*Vec2 velocity,*/ int score)
+PlayerDivision * Player::createDivision(Vec2 position, int score)
 {
 	/*创建一个玩家分身*/
 	auto division = PlayerDivision::create(_playerName, _keywordID, score);
@@ -118,7 +83,7 @@ void  Player::dividePlayer()
 			auto newDivision = this->createDivision(position, /*_velocity,*/ score);
 			_map->addChild(newDivision);
 
-			float angle = /*_velocity*/(division->getVelocity()).getAngle();
+			float angle = (division->getVelocity()).getAngle();
 			float divideDistance = radius + PLAYER_MIN_DIVIDE_DISTANCE;
 			Vec2 newPosition = Vec2(divideDistance*cosf(angle), divideDistance*sinf(angle));
 
@@ -298,8 +263,7 @@ void Player::updateDivision()
 							Vec2 newPosition1 = Vec2(position1.x - cosf(angle)*fixDistance, position1.y - sinf(angle)*fixDistance);
 							Vec2 newPosition2 = Vec2(position2.x + sinf(angle)*fixDistance, position2.y + sinf(angle)*fixDistance);
 							division1->setPosition(newPosition1);
-							//division2->setPosition(newPosition2);
-							//break;
+							
 						}
 					}
 				}
@@ -439,6 +403,7 @@ bool Player::collidePrick(Prick *prick)
 						splitScore = MAX_EAT_PRICK_SCORE;
 						divisionScore = divisionScore - splitScore;
 					}
+					assert(divisionScore >= 0);
 					division->eatPrick(divisionScore);
 				}
 				else
@@ -451,6 +416,7 @@ bool Player::collidePrick(Prick *prick)
 						}
 						divisionScore = divisionScore - splitScore;
 					}
+					assert(divisionScore >= 0);
 					division->eatPrick(divisionScore);
 				}
 
@@ -494,12 +460,7 @@ bool Player::collidePrick(Prick *prick)
 
 	return false;
 }
-/*
-void Player::setConcentrate()
-{
-	_state = State::CONCENTRATE;
-}
-*/
+
 bool Player::collideRival(Player * rival)
 {
 	bool bRet = false;
@@ -547,7 +508,6 @@ int Player::collideDivision(PlayerDivision * division)
 			}
 			else if (rivalScore > playerScore*MIN_EAT_MULTIPLE)  //玩家分身被吃
 			{
-			    //division2->eatRival(playerScore);
 				return 2;
 			}
 		}

@@ -19,21 +19,17 @@ public:
 		NORMAL, //正常状态
 		DIVIDE,  //分身状态,130行
 		SPIT,  //吐球状态
-		/*CONCENTRATE  //主动中合状态*/
 	};
 
 	Player();
 	~Player();
-	//创建并初始化玩家玩家名叫Hello;
-	static Player * create(Vec2  position, Node * map);
-	bool init(Vec2  position, Node * map);
+
+
 	//创建玩家并导入玩家基本信息；
 	static Player * create(std::string & name,  int keywordID,/* Vec2 velocity,*/ Node * map);
 	bool init(std::string & name, int keywordID, /*Vec2 velocity,*/ Node * map);
 	//退出；
 	virtual void onExit();
-
-	
 
 	//创建一个玩家分身；需要位置、速度、得分参数；
 	PlayerDivision * createDivision(Vec2 position, int score);

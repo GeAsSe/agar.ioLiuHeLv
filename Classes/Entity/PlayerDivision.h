@@ -64,7 +64,6 @@ private:
 	int _keywordID;
 
 	float _speed;
-	/*float _weight;*/
 	Vec2 _velocity;
 	Vec2 _prePosition;  //上一帧的位置
 };

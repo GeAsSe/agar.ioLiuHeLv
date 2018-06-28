@@ -62,7 +62,6 @@ bool StartScene::init()
 		if (pnnc->name != "") {
 			Director::getInstance()->replaceScene(Start_Scene::createScene());
 		}
-		//NeditBox->setText("");
 	});
 	auto menu = Menu::create(Exchangebuttom, NULL);
 	menu->setPosition(Point::ZERO);

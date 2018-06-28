@@ -12,10 +12,7 @@ public:
 	//初始化孢子
 	bool init(const std::string& filename);
 	//创建孢子--指定类型
-	static Spore * create(int id);
-	bool init(int id);
 
-	int getID();
 private:
 	int _skinID;
 };

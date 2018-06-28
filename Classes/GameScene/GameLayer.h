@@ -43,11 +43,8 @@ public:
 	void initPrick(int prickNum, std::vector<int> globalIDs, std::vector<double>position);		//初始化绿刺
 
 	void resetpoller(float dt);
-	/*单机调试函数*/
-	void initDataDefault();
-	void initRival();
-	void initPlayer();
-	void initFood();
+
+
 
 	void updateView();		//更新游戏视图
 	void updateFood();		//更新食物
@@ -67,9 +64,8 @@ public:
 
 	void spitSpore();		//吐孢子操作
 	void dividePlayer();		//分身操作
-	void resetFood(Node * node);		//重置豆子
+	void resetFood(Node * node);		//重置Food
 	/*将玩家信息上传*/
-	/*void synPlayerMove();*/		//同步玩家移动
 	void synPlayerInfo();		//同步玩家信息
 	void synSporeInfo();		//同步孢子
     /*处理服务器返回消息*/

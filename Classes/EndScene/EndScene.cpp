@@ -18,7 +18,6 @@ Scene* EndScene::createScene()
 
 bool EndScene::init()
 {
-	//super init first;
 
 	if (!Layer::init())
 	{
