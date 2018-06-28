@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="win32">
+      <UniqueIdentifier>{84a8ebd7-7cf0-47f6-b75e-d441df67da40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resource">
+      <UniqueIdentifier>{715254bc-d70b-4ec5-bf29-467dd3ace079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Entity">
+      <UniqueIdentifier>{3f7a30e2-8367-4567-9137-042a0ca17d91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Header">
+      <UniqueIdentifier>{0dbf596e-e7dc-444a-bdfa-ce790ef7bad6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Web">
+      <UniqueIdentifier>{2ba84def-fecb-49b8-89eb-475ecd32a0b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Web\Core">
+      <UniqueIdentifier>{040e7afd-f621-4417-8a53-d325db4491cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Web\Communication">
+      <UniqueIdentifier>{b88694f5-3a77-4557-95a3-c6d00eb1946c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Web\ServerBase">
+      <UniqueIdentifier>{0b2b17f0-8be9-4c06-9e36-64f858c9500d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameScene">
+      <UniqueIdentifier>{ea8d20fa-b082-4677-a282-195cc861c0c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\EnterScene">
+      <UniqueIdentifier>{c7903fc7-f562-4b47-a035-5f0583c68911}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\EndScene">
+      <UniqueIdentifier>{52eaf116-d046-43da-a258-56d5f53c3e3a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>win32</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\AppDelegate.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\HelloWorldScene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\Entity.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\Food.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\Player.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\PlayerDivision.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\Prick.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Entity\Spore.cpp">
+      <Filter>src\Entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Core\BufferList.cpp">
+      <Filter>src\Web\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Core\CommPool.cpp">
+      <Filter>src\Web\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Core\MemPool.cpp">
+      <Filter>src\Web\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Core\Ref.cpp">
+      <Filter>src\Web\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Core\TimerManager.cpp">
+      <Filter>src\Web\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\BaseSocket.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\Epoller.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\SelectPoller.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\TCPClienter.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\TCPConnector.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\TCPListener.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Communication\UDPUnit.cpp">
+      <Filter>src\Web\Communication</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Tinyxml2.cpp">
+      <Filter>src\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\Util.cpp">
+      <Filter>src\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\XmlParser.cpp">
+      <Filter>src\Web</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Web\ServerBase\BaseServer.cpp">
+      <Filter>src\Web\ServerBase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene\GameLayer.cpp">
+      <Filter>src\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\GameScene\GameScene.cpp">
+      <Filter>src\GameScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EnterScene\HelpScene.cpp">
+      <Filter>src\EnterScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EnterScene\Start_Scene.cpp">
+      <Filter>src\EnterScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EnterScene\StartScene.cpp">
+      <Filter>src\EnterScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\EndScene\EndScene.cpp">
+      <Filter>src\EndScene</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="main.h">
+      <Filter>win32</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\AppDelegate.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\HelloWorldScene.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\Entity.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\Food.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\Player.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\PlayerDivision.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\Prick.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Entity\Spore.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Header\AppMacros.h">
+      <Filter>src\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\BufferList.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\CommPool.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\ICore.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\KxLog.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\MemPool.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\Ref.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Core\TimerManager.h">
+      <Filter>src\Web\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\BaseSocket.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\Epoller.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\SelectPoller.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\TCPClienter.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\TCPConnector.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\TCPListener.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Communication\UDPUnit.h">
+      <Filter>src\Web\Communication</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\KXServer.h">
+      <Filter>src\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Singleton.h">
+      <Filter>src\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Tinyxml2.h">
+      <Filter>src\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\Util.h">
+      <Filter>src\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\XmlParser.h">
+      <Filter>src\Web</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Web\ServerBase\BaseServer.h">
+      <Filter>src\Web\ServerBase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene\GameLayer.h">
+      <Filter>src\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\GameScene\GameScene.h">
+      <Filter>src\GameScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EnterScene\HelpScene.h">
+      <Filter>src\EnterScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EnterScene\Start_Scene.h">
+      <Filter>src\EnterScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EnterScene\StartScene.h">
+      <Filter>src\EnterScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\EndScene\EndScene.h">
+      <Filter>src\EndScene</Filter>
+    </ClInclude>
+    <ClInclude Include="client.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="nameancolor.h">
+      <Filter>src\Entity</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="game.rc">
+      <Filter>resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

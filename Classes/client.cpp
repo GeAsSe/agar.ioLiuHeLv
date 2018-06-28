@@ -105,7 +105,7 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 
 			xml.GetContent("info/playerID", playerID);
 			xml.GetContent("info/playername", playername);
-			xml.GetContent("info/keyID",KeywordID);
+			xml.GetContent("info/KeyID",KeywordID);
 			xml.GetContent("info/divisionNum", divisionNum);
 
 			xml.GetContent("info/position", positionStr);
