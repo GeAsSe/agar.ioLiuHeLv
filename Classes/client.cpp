@@ -1,9 +1,11 @@
 #include "client.h"
-#include"XmlParser.h"
-#include"/Cgame/Classes/GameScene/GameLayer.h"
+/*#include"XmlParser.h"*/
+#include"Classes\Web\XmlParser.h"
+#include"Classes\GameScene\GameLayer.h"
 #include<vector>
 #include<string>
-#include"/Cgame/Classes/Web/Singleton.h"
+#include"Classes\Web\Singleton.h"
+#include"proj.win32\nameancolor.h"
 
 CClient::CClient()
 {
@@ -16,23 +18,21 @@ CClient::~CClient()
 
 }
 
-bool CClient::CClientInit()
+bool CClient::ClientInit()
 {
+	m_Poller = new CSelectPoller();
 	m_Connecter = new CTCPConnector("192.168.31.175", 5555, m_Poller);
-	m_Connecter->SetModule(new CClient());
+	m_Connecter->SetModule(this);
 	m_Poller->AddPollObject(m_Connecter, POLLTYPE_IN);
 
-	// TODO: 客户端加入游戏
-	char buff[128];
-	memset(buff, 0, sizeof(buff));
-	char* text = "<request><method>PLAYER_JOIN</method></request>\n";
-	int len = 4 + strlen(text) + 1;
-	*(int*)(buff) = len;
-	strcpy(buff + 4, text);
-
-	m_Connecter->Send(buff, len);
-
 	return true;
+}
+
+void CClient::ClientUnInit()
+{
+	delete m_Poller;
+
+	m_Poller = NULL;
 }
 
 int CClient::RequestLen(char * buffer, unsigned int len)
@@ -43,7 +43,7 @@ int CClient::RequestLen(char * buffer, unsigned int len)
 	}
 	else
 	{
-		return *(int*)(buffer);
+		return 4 + *(int*)(buffer);
 	}
 }
 
@@ -51,7 +51,9 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 {
 	do
 	{
-		GameLayer *layer = CSingleton<GameLayer>::GetInstancePtr();
+		//GameLayer *layer = CSingleton<GameLayer>::GetInstancePtr();
+		auto pnnc = CSingleton<nameandcolor>::GetInstancePtr();
+		auto layer = pnnc->layer;
 		CXmlParser xml;
 		if (!xml.LoadContent(buffer + 4, len - 4))
 		{
@@ -65,21 +67,8 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 			break;
 		}
 
-		if (strMethod == "PLAYERMOVE")
-		{
-			int playerID;
-			int PDnum;
-			std::vector<double> positions;
-			std::string position;
-			xml.GetContent("info/playerID", playerID);
-			xml.GetContent("info/PD", PDnum);
-			for (int i = 0; i < PDnum*2; i++) {
-				xml.GetContent("info/position", position);
-				positions.push_back(atof(position));
-			}
-			layer->playerMoveEvent(playerID, positions);
-		}
-		else if (strMethod == "PLAYERDIVIDE")
+		
+		if (strMethod == "PLAYERDIVIDE")
 		{
 			int playerID;
 			xml.GetContent("info/playerID", playerID);
@@ -109,37 +98,59 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 			int KeywordID;
 			int divisionNum; 
 			std::vector<double>position; 
+			std::vector<std::string>positionStr;
 			std::vector<int>scores;
-			int score;
+			std::vector<std::string>scoresStr;
+	
+
 			xml.GetContent("info/playerID", playerID);
 			xml.GetContent("info/playername", playername);
 			xml.GetContent("info/keyID",KeywordID);
 			xml.GetContent("info/divisionNum", divisionNum);
-			for (int i = 0; i < divisionNum; i++) {
-				xml.GetContent("info/scores", score);
-				scores.push_back(score);
+
+			xml.GetContent("info/position", positionStr);
+			for (auto f : positionStr)
+			{
+				position.push_back(stof(f));
 			}
-			//double不会传
+
+			xml.GetContent("info/scores", scoresStr);
+			for (auto i : scoresStr)
+			{
+				scores.push_back(stoi(i));
+			}
+		
 			layer->enterPlayerEvent( playerID,  playername,  KeywordID,  divisionNum,position, scores);
 		}
 		else if (strMethod == "UPDATEPLAYER") {
 			int playerID;
 			int divisionNum;
-			int score;
 			std::vector<double>position;
+			std::vector<std::string>positionStr;
 			std::vector<int> scores;
+			std::vector<std::string>scoresStr;
 			xml.GetContent("info/playerID", playerID);
 			xml.GetContent("info/divisionNum", divisionNum);
-			for (int i = 0; i < divisionNum; i++) {
-				xml.GetContent("info/scores", score);
-				scores.push_back(score);
+
+			xml.GetContent("info/position", positionStr);
+			for (auto f : positionStr)
+			{
+				position.push_back(stof(f));
 			}
-			//double不会接；
+			
+			xml.GetContent("info/scores", scoresStr);
+			for (auto i : scoresStr)
+			{
+				scores.push_back(stoi(i));
+			}
+
 			layer->updatePlayerEvent(playerID, divisionNum, position, scores);
 		}
 		else if (strMethod == "MESSAGE") {
 			std::string message;
 			xml.GetContent("info/message", message);
+			auto pnnc = CSingleton<nameandcolor>::GetInstancePtr();
+			pnnc->mess->pushmessage(message);
 		}
 		else if (strMethod == "COLLIDE") {
 			layer->collide();
@@ -150,71 +161,97 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 			xml.GetContent("info/seed", seed);
 			layer->initFood(seed);
 			//孢子的初始化数据
-			int sporeNum,
+			int sporeNum;
 			std::vector<int>sporeglobalIDs;
-			int sporeglobalID;
+			std::vector<std::string>sporeglobalIDsStr;
 			std::vector<double> sporeposition;
-			xml.GetContent("info/sporenum", sporeNum);
-			for (int i = 0; i < sporeNum; i++) {
-				xml.GetContent("info/sporeglobalID", sporeglobalID);
-				sporeglobalIDs.push_back(sporeglobalID);
+			std::vector<std::string>sporepositionStr;
+            xml.GetContent("info/sporenum", sporeNum);
+			xml.GetContent("info/sporeglobalID", sporeglobalIDsStr);
+			for (auto i : sporeglobalIDsStr)
+			{
+				sporeglobalIDs.push_back(stoi(i));
 			}
-			//double不会写
+			xml.GetContent("info/sporeposition", sporepositionStr);
+			for (auto f : sporepositionStr)
+			{
+				sporeposition.push_back(stof(f));
+			}
 			layer->initSpore(sporeNum, sporeglobalIDs, sporeposition);
 			//刺的初始化
 			int prickNum;
 			std::vector<int> prickglobalIDs;
-			int prickglobalID;
-			std::vector<double>position;
+			std::vector<std::string> prickglobalIDsStr;
+			std::vector<double>prickposition;
+			std::vector<std::string> prickpositionStr;
 			xml.GetContent("info/prickNum", prickNum);
-			for (int i = 0; i < prickNum; i++) {
-				xml.GetContent("info/prickglobalID", prickglobalID);
-				prickglobalIDs.push_back(prickglobalID);
+			xml.GetContent("info/prickglobalID", prickglobalIDsStr);
+			for (auto i : prickglobalIDsStr)
+			{
+				prickglobalIDs.push_back(stoi(i));
 			}
-			//double不会写
-			layer->initPrick( prickNum, prickglobalIDs, position);
+			xml.GetContent("info/prickposition", prickpositionStr);
+			for (auto f : prickpositionStr)
+			{
+				prickposition.push_back(stof(f));
+			}
+			layer->initPrick( prickNum, prickglobalIDs, prickposition);
 			//rival的初始化
 			int rivalNum;
-			std::vector<int>rivalIDs;
-			int rivalID;
-			std::vector<std::string>rivalnames;
-			std::vector<int> rivalKeywordIDs;
-			int rivalKeywordID;
-			std::vector<int>rivaldivisionNums;
-			int rivaldivisionNum;
 
-			int totalpdNum = 0;
+			std::vector<int>rivalIDs;
+			std::vector<std::string>rivalIDsStr;
+
+			std::vector<std::string>rivalnames;
+
+			std::vector<int> rivalKeywordIDs;
+			std::vector<std::string>rivalKeywordIDsStr;
+
+			std::vector<int>rivaldivisionNums;
+			std::vector<std::string>rivaldivisionNumsStr;
+
 			std::vector<double>rivalpositions; 
+			std::vector<std::string>rivalpositionsStr;
+
 			std::vector<int>rivalscores;
-			int rivalscore;
+			std::vector<std::string>rivalscoresStr;
+			
 
 			xml.GetContent("info/rivalNum", rivalNum);
-			for (int i = 0; i < rivalNum; i++)
+			
+			xml.GetContent("info/rivalID", rivalIDsStr);
+			for (auto i : rivalIDsStr)
 			{
-				xml.GetContent("info/playerID", rivalID);
-				rivalIDs.push_back(rivalID);
-			}
-			xml.GetContent("info/playername", rivalnames);
-			for (int i = 0; i < rivalNum; i++)
-			{
-				xml.GetContent("info/KeywordID", rivalKeywordID);
-				rivalKeywordIDs.push_back(rivalKeywordID);
-			}
-			for (int i = 0; i < rivalNum; i++)
-			{
-				xml.GetContent("info/divisionNum", rivaldivisionNum);
-				rivaldivisionNums.push_back(rivaldivisionNum);
-			}
-			//double不会写；
-			for (int i = 0; i < rivalNum; i++) {
-				totalpdNum += rivaldivisionNums[i];
+				rivalIDs.push_back(stoi(i));
 			}
 
-			for (int i = 0; i < totalpdNum; i++)
+			xml.GetContent("info/rivalname", rivalnames);
+
+
+			xml.GetContent("info/rivalKeywordID", rivalKeywordIDsStr);
+			for (auto i : rivalKeywordIDsStr)
 			{
-				xml.GetContent("info/rivalscores", rivalscore);
-				rivalscores.push_back(rivalscore);
+				rivalKeywordIDs.push_back(stoi(i));
 			}
+
+			xml.GetContent("info/rivaldivisionNum", rivaldivisionNumsStr);
+			for (auto i : rivaldivisionNumsStr)
+			{
+				rivaldivisionNums.push_back(stoi(i));
+			}
+		
+			xml.GetContent("info/rivalposition", rivalpositionsStr);
+			for (auto f : rivalpositionsStr)
+			{
+				rivalpositions.push_back(stof(f));
+			}
+			
+			xml.GetContent("info/rivalscores", rivalscoresStr);
+			for (auto i : rivalscoresStr)
+			{
+				rivalscores.push_back(stoi(i));
+			}
+
 			layer->initRival(rivalIDs,
 				rivalNum, rivalnames, rivalKeywordIDs,
 				rivaldivisionNums, rivalpositions, rivalscores);
@@ -223,20 +260,42 @@ void CClient::Process(char * buffer, unsigned int len, ICommunication * target)
 			std::string name;
 			int KeywordID;
 			int divisionNum;
+
 			std::vector<double>positions;
+			std::vector<std::string>positionsStr;
+
 			std::vector<int>scores;
-			int score;
+			std::vector<std::string>scoresStr;
+
 			xml.GetContent("info/ID", ID);
 			xml.GetContent("info/name", name);
 			xml.GetContent("info/KeywordID", KeywordID);
 			xml.GetContent("info/divisionNum", divisionNum);
-			//double不会写；
-			for (int i = 0; i < divisionNum; i++) {
-				xml.GetContent("info/scores", score);
-				scores.push_back(score);
+			
+			xml.GetContent("info/position", positionsStr);
+			for (auto f : positionsStr)
+			{
+				positions.push_back(stof(f));
 			}
+
+			xml.GetContent("info/scores", scoresStr);
+			for (auto i : scoresStr)
+			{
+				scores.push_back(stoi(i));
+			}
+			
 			layer->initPlayer(ID, name, KeywordID, divisionNum, positions, scores);
 		}
 
 	} while (0);
+}
+
+void CClient::resetPoller()
+{
+	m_Poller->Poll();
+}
+
+void CClient::Send(char * buff, int len)
+{
+	m_Connecter->Send(buff, len);
 }
