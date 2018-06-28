@@ -11,7 +11,7 @@
 
 #include <set>
 
-#include  "/Cgame/Classes/Web/Core/ICore.h"
+#include  "Web/Core/ICore.h"
 
 namespace KxServer {
 

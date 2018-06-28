@@ -1,7 +1,7 @@
 #include <iostream>
-#include "/Cgame/Classes/Web/Core/CommPool.h"
+#include "Web/Core/CommPool.h"
 #include "TCPConnector.h"
-#include "/Cgame/Classes/Web/Core/MemPool.h"
+#include "Web/Core/MemPool.h"
 
 using namespace std;
 

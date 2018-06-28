@@ -8,9 +8,9 @@
 #ifndef __TCPCLIENTER_H__
 #define __TCPCLIENTER_H__
 
-#include "/Cgame/Classes/Web/Core/ICore.h"
+#include "Web/Core/ICore.h"
 #include "BaseSocket.h"
-#include "/Cgame/Classes/Web/Core/BufferList.h"
+#include "Web/Core/BufferList.h"
 
 namespace KxServer {
 

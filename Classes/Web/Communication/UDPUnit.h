@@ -7,7 +7,7 @@
 #ifndef __UDPUNIT_H__
 #define __UDPUNIT_H__
 
-#include "/Cgame/Classes/Web/Core/ICore.h"
+#include "Web/Core/ICore.h"
 #include "BaseSocket.h"
 
 namespace KxServer {

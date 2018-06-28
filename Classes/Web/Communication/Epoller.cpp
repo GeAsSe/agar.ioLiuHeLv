@@ -1,5 +1,5 @@
 #include "Epoller.h"
-#include "/Cgame/Classes/Web/Core/CommPool.h"
+#include "Web/Core/CommPool.h"
 
 namespace KxServer {
 

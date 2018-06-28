@@ -9,7 +9,7 @@
 #ifndef __KX_SOCKET__
 #define __KX_SOCKET__
 
-#include "/Cgame/Classes/Web/Core/ICore.h"
+#include "Web/Core/ICore.h"
 
 namespace KxServer {
 
