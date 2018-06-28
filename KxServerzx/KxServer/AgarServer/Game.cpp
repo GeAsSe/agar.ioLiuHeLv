@@ -42,7 +42,7 @@ void CGame::collide()
 	for (auto p1 : m_player) {
 		for (auto p2 : m_player) {
 			if (p1.first >= p2.first) {
-				break;
+				continue;
 			}
 			if (p1.second->collideRival(p2.second) == true) {
 				respcollide(p1.first, p2.first);
@@ -57,11 +57,27 @@ void CGame::collide()
 	}
 }
 
+void CGame::respcollide(PLAYER_ID ID1, PLAYER_ID ID2)
+{
+	auto player1 = m_player[ID1];
+	auto player2 = m_player[ID2];
+	ICommunication *target1 = player1->get_target();
+	ICommunication *target2 = player2->get_target();
+	ostringstream oss;
+	oss << "<info><method>COLLIDE</method></info>";
+	string s = oss.str();
+	int nLen = s.length();
+	target1->Send((char *)&nLen, 4);
+	target1->Send(const_cast<char *>(s.c_str()), s.length());
+	target2->Send((char *)&nLen, 4);
+	target2->Send(const_cast<char *>(s.c_str()), s.length());
+}
+
 void CGame::AddPrick()
 {
 	static int id = 0;
-	int xPosition = rand() % 2400;
-	int yPosition = rand() % 1800;
+	int xPosition = rand() % 2350;
+	int yPosition = rand() % 1250;
 	/*
 	Prick prick;
 	prick.setPrick(xPosition, yPosition);
@@ -80,7 +96,7 @@ void CGame::AddPrick()
 	int nLen = s.length();
 	id++;
 	DEBUG_LOG("prick added");
-	//ä¸‹é¢è¦æŠŠç”Ÿæˆçš„æ­¤PRICKä¿¡æ¯å‘ç»™æ‰€æœ‰çŽ©å®¶
+	//ÏÂÃæÒª°ÑÉú³ÉµÄ´ËPRICKÐÅÏ¢·¢¸øËùÓÐÍæ¼Ò
 	if (m_player.size() == 0) {
 		return;
 	}
@@ -94,13 +110,13 @@ void CGame::AddPrick()
 	}
 }
 
-// åŠŸèƒ½: çŽ©å®¶åŠ å…¥æ¸¸æˆï¼Œéœ€è¦å°†å…¶æ”¾å…¥åœ°å›¾ï¼Œåæ ‡éšæœº
+// ¹¦ÄÜ: Íæ¼Ò¼ÓÈëÓÎÏ·£¬ÐèÒª½«Æä·ÅÈëµØÍ¼£¬×ø±êËæ»ú
 //
 void CGame::Join(PLAYER_ID playerID, ICommunication *target, std::string name, int keyID)
 {
 	Player *player = new Player;
 	*player = *player->create(name, keyID, playerID, target);
-	int x = rand() % 2400;          //å°†æ¥è€ƒè™‘ç”Ÿæˆåœ¨æ— å•ä½å¤„
+	int x = rand() % 2400;          //½«À´¿¼ÂÇÉú³ÉÔÚÎÞµ¥Î»´¦
 	int y = rand() % 1800;
 	*player->createDivision(x, y, 10);
 	m_player.insert(make_pair(playerID, player));
@@ -116,7 +132,7 @@ void CGame::respJoin(PLAYER_ID playerID, ICommunication * target)
 		if (m_target == NULL) {
 			continue;
 		}
-		if (target == m_target) {
+		if (m_target == target) {
 			ostringstream oss;
 			oss << "<info><method>START</method>"
 				<< "<seed>" << seed << "</seed>"
@@ -238,10 +254,13 @@ void CGame::respSPIT(PLAYER_ID playerID, int sporecount)
 	ostringstream oss;
 	oss << "<info><method>SPITSPORERESULT</method>"
 		<< "<playerID>" << playerID << "</playerID>";
-	map<PLAYER_ID, Player*>::iterator iter = m_player.end();
-	--iter;
-	int globalID = iter->first;
-	oss << "<globalID>" << globalID << "</globalID>"
+	int globalID = 0;
+	for (auto sporeItem : m_spores) {
+		if (sporeItem.first >= globalID) {
+			globalID = sporeItem.first;
+		}
+	}
+	oss << "<globalID>" << globalID + 1<< "</globalID>"
 		<< "<sporecount>" << sporecount << "</sporecount>"
 		<< "</info>";
 	string s = oss.str();
@@ -255,7 +274,7 @@ void CGame::respSPIT(PLAYER_ID playerID, int sporecount)
 
 
 //
-// è¯´æ˜Ž: åªæ˜¯ç®€å•è¯´æ˜Ž Move å‚æ•°ï¼Œå®žé™…è¿˜éœ€è¦è€ƒè™‘å…¶æ‰€æœ‰å­çƒçš„ç§»åŠ¨
+// ËµÃ÷: Ö»ÊÇ¼òµ¥ËµÃ÷ Move ²ÎÊý£¬Êµ¼Ê»¹ÐèÒª¿¼ÂÇÆäËùÓÐ×ÓÇòµÄÒÆ¶¯
 //
 /*
 void CGame::Move(PLAYER_ID playerID, int x, int y)
@@ -295,22 +314,6 @@ int CGame::getseed()
 	return seed;
 }
 
-void CGame::respcollide(PLAYER_ID ID1, PLAYER_ID ID2)
-{
-	auto player1 = m_player[ID1];
-	auto player2 = m_player[ID2];
-	ICommunication *target1 = player1->get_target();
-	ICommunication *target2 = player2->get_target();
-	ostringstream oss;
-	oss << "<info><method>COLLIDE</method></info>";
-	string s = oss.str();
-	int nLen = s.length();
-	target1->Send((char *)&nLen, 4);
-	target1->Send(const_cast<char *>(s.c_str()), s.length());
-	target2->Send((char *)&nLen, 4);
-	target2->Send(const_cast<char *>(s.c_str()), s.length());
-}
-
 void CGame::delPrick(int delNum, vector<int> globalIDs)
 {
 	for (int i = 0; i < delNum; i++) {
@@ -325,13 +328,18 @@ void CGame::SYNPLAYERINFO(PLAYER_ID ID, int divisionNum, vector<double> position
 		int Oldsize = player->getDivisionNum();
 		int newSize = divisionNum;
 		if (Oldsize != newSize) {
-			player->clearDivisionList();
-			for (int i = 0, j = 0; i < newSize; i++) {
-				double x = positions[j];
-				double y = positions[j + 1];
-				int score = scores[i];
-				auto division = player->createDivision(x, y, score);
-				j += 2;
+			if (newSize == 0) {
+				m_player.erase(ID);
+			}
+			else {
+				player->clearDivisionList();
+				for (int i = 0, j = 0; i < newSize; i++) {
+					double x = positions[j];
+					double y = positions[j + 1];
+					int score = scores[i];
+					auto division = player->createDivision(x, y, score);
+					j += 2;
+				}
 			}
 		}
 		else {
@@ -359,7 +367,7 @@ void CGame::UPDATAPLAYEREVENT(PLAYER_ID ID, int divisionNum, vector<double> posi
 	ostringstream oss;
 	oss << "<info><method>UPDATEPLAYER</method>"
 		<< "<playerID>" << ID << "</playerID>"
-		<< "divisionNum" << divisionNum << "</divisionNum>";
+		<< "<divisionNum>" << divisionNum << "</divisionNum>";
 	for (auto p : positions) {
 		oss << "<position>" << p << "</position>";
 	}
@@ -402,6 +410,15 @@ void CGame::MESSAGE(std::string message)
 		<< "</info>";
 	string s = oss.str();
 	int nLen = s.length();
+	for (auto p: m_player) {
+		if (p.second != NULL) {
+			ICommunication * target = p.second->get_target();
+			if (target != NULL) {
+				target->Send((char *)&nLen, 4);
+				target->Send(const_cast<char *>(s.c_str()), s.length());
+			}
+		}
+	}
 }
 
 void CGame::DELSPORE(int globalID)
