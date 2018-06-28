@@ -6,6 +6,9 @@
 /*#include "Header\Common.h"*/
 #include "ui\CocosGUI.h"
 #include<vector>
+#include"proj.win32\client.h"
+#include"Classes\Web\Singleton.h"
+
 
 USING_NS_CC;
 using namespace ui;
@@ -29,6 +32,7 @@ public:
 
 	virtual void update(float dt);		//游戏中每帧更新
 
+	void start();
 	//void initData(int seed,);			//初始化地图数据
 	void initRival(std::vector<int>playerIDs,
 	int rivalNum, std::vector<std::string>playernames, std::vector<int> KeywordIDs,
@@ -38,7 +42,7 @@ public:
 	void initSpore(int sporeNum, std::vector<int>globalIDs, std::vector<double> position);		//初始化孢子
 	void initPrick(int prickNum, std::vector<int> globalIDs, std::vector<double>position);		//初始化绿刺
 
-
+	void resetpoller(float dt);
 	/*单机调试函数*/
 	void initDataDefault();
 	void initRival();
@@ -65,7 +69,7 @@ public:
 	void dividePlayer();		//分身操作
 	void resetFood(Node * node);		//重置豆子
 	/*将玩家信息上传*/
-	void synPlayerMove();		//同步玩家移动
+	/*void synPlayerMove();*/		//同步玩家移动
 	void synPlayerInfo();		//同步玩家信息
 	void synSporeInfo();		//同步孢子
     /*处理服务器返回消息*/
@@ -85,6 +89,7 @@ private:
 	std::vector<int> _vecSporeNeedUpdate;			//需要更新的孢子
 	float _mapScale;			//地图缩放因子
 	int _ID;                  //玩家ID；
+
 };
 
 #endif
