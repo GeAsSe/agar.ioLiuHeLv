@@ -27,8 +27,6 @@
 #include"EnterScene/StartScene.h"
 #include"EnterScene/HelpScene.h"
 #include "ui/CocosGUI.h"
-#include"Entity/Entity.h"
-#include"Header/AppMacros.h"
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -62,54 +60,39 @@ bool HelloWorld::init()
 	auto *chnStrings = Dictionary::createWithContentsOfFile("chinese/Enter_Strings.xml");
 	const char *str1 = ((String*)chnStrings->objectForKey("string1"))->getCString();
 	auto* labelBegin = Label::create(str1, "Arial", 18);
+	labelBegin->enableOutline(Color4B::RED, 3);
 	labelBegin->setTextColor(Color4B::GREEN);
 	auto pMenuBegin = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonBegin));
 	auto pLabelBegin = MenuItemLabel::create(labelBegin);
 	auto menuBegin = Menu::create(pMenuBegin, pLabelBegin, NULL);
 	menuBegin->setAnchorPoint(Vec2(0,0));
-	menuBegin->setScale(2.0);
-	menuBegin->setPosition(size.width / 2, size.height / 2 *1.3);
+	menuBegin->setScale(1.5);
+	menuBegin->setPosition(size.width / 2, size.height / 2 + 60);
 	this->addChild(menuBegin);
 
 	const char *str2 = ((String*)chnStrings->objectForKey("string2"))->getCString();
 	auto* labelHelp = Label::create(str2, "Arial", 18);
+	labelHelp->enableOutline(Color4B::RED, 3);
 	labelHelp->setTextColor(Color4B::GREEN);
 	auto pMenuHelp = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonHelp));
 	auto pLabelHelp = MenuItemLabel::create(labelHelp);
 	auto menuHelp = Menu::create(pMenuHelp, pLabelHelp, NULL);
 	menuHelp->setAnchorPoint(Vec2(0, 0));
-	menuHelp->setScale(2.0);
+	menuHelp->setScale(1.5);
 	menuHelp->setPosition(size.width / 2, size.height / 2 );
 	this->addChild(menuHelp);
 
 	const char *str3 = ((String*)chnStrings->objectForKey("string3"))->getCString();
 	auto* labelOut = Label::create(str3, "Arial", 18);
+	labelOut->enableOutline(Color4B::RED, 3);
 	labelOut->setTextColor(Color4B::GREEN);
 	auto pMenuOut = MenuItemImage::create("button.png", "button_a.png", this, menu_selector(HelloWorld::MenuButtonOut));
 	auto pLabelOut = MenuItemLabel::create(labelOut);
 	auto menuOut = Menu::create(pMenuOut, pLabelOut, NULL);
 	menuOut->setAnchorPoint(Vec2(0, 0));
-	menuOut->setScale(2.0);
-	menuOut->setPosition(size.width / 2, size.height / 2*0.7);
+	menuOut->setScale(1.5);
+	menuOut->setPosition(size.width / 2, size.height / 2-60);
 	this->addChild(menuOut);
-
-	const char *str4 = ((String*)chnStrings->objectForKey("string4"))->getCString();
-	auto* label_game = Label::create(str4, "Arial", 60);
-	label_game->setPosition(size.width / 2, size.height / 2*1.6);
-	label_game->setTextColor(Color4B(0,255,100,255));
-	this->addChild(label_game);
-
-	auto ball = Sprite::create("BALL5.png");
-	ball->setAnchorPoint(Vec2(0, 0));
-	ball->setScale(1.0);
-	ball->setPosition(0, 0);
-	this->addChild(ball);
-
-	auto ball2 = Sprite::create("BALL5.png");
-	ball2->setAnchorPoint(Vec2(1, 0));
-	ball2->setScale(1.0);
-	ball2->setPosition(size.width, 0);
-	this->addChild(ball2);
 
     return true;
 }
