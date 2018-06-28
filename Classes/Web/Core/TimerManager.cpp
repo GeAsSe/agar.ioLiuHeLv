@@ -4,7 +4,7 @@ using namespace std;
 
 #ifdef WIN32
 
-int gettimeofday(struct timeval * val, struct timezone * zone)
+int gettimeofday(struct timeval * val, struct timezone_ignore * zone)
 {
 	if (val)
 	{
@@ -328,7 +328,8 @@ CTimerManager* CTimerManager::m_Instance = NULL;
 
 CTimerManager::CTimerManager(void)
 {
-	gettimeofday((struct timeval*)&(m_Now), 0);
+	struct timezone_ignore *tz = NULL;
+	gettimeofday((struct timeval*)&(m_Now), tz);
 	m_fNow = m_Now.Getfloat();
 	m_AglieMidValue = 1.0f;
 

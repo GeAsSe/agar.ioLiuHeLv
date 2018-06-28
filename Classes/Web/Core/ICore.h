@@ -26,13 +26,13 @@ typedef int KXSockLen;
 #define SNPRINTF  sprintf_s
 #define KXINVALID_SOCKET (INVALID_SOCKET)
 
-struct timezone
+struct timezone_ignore
 {
 	int tz_minuteswest;
 	int tz_dsttime;
 };
 
-int gettimeofday(struct timeval * val, struct timezone * zone);
+int gettimeofday(struct timeval * val, struct timezone_ignore * zone);
 
 #pragma comment(lib, "ws2_32.lib")
 
@@ -85,7 +85,8 @@ struct TimeVal
 
 	inline void TimeValNow()
 	{
-		gettimeofday((struct timeval *)this,  0);
+		struct timezone_ignore *tz = NULL;
+		gettimeofday((struct timeval *)this, tz);
 	}
 
 	//if i bigger return true, else return false
