@@ -19,20 +19,20 @@ int CClientCallback::RequestLen(char *buffer, unsigned int len)
     else
     {
         // 底层限制包最大长度为 MAX_PKGLEN 1<<16
-        return *(int*)(buffer);
+		return (4 + *(int*)(buffer));
     }
 }
 
 void CClientCallback::Process(char *buffer, unsigned int len, ICommunication *target)
 {
-	DEBUG_LOG("Server recv msg:\n" << string(buffer + 4, len));
+	DEBUG_LOG("Server recv msg:\n" << string(buffer + 4, len - 4));
     do
     {
         // 获取游戏实例对象
         CGame *pGame = CSingleton<CGame>::GetInstancePtr();
 
         CXmlParser xml;
-        if (!xml.LoadContent(buffer + 4, len))
+        if (!xml.LoadContent(buffer + 4, len - 4))
         {
             break;
         }
